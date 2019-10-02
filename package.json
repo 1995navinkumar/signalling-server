@@ -1,0 +1,26 @@
+{
+  "name": "signalling-server",
+  "version": "1.0.0",
+  "description": "Signalling server for peer party",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1995navinkumar/signalling-server.git"
+  },
+  "keywords": [
+    "signalling",
+    "server",
+    "peer",
+    "party",
+    "webrtc"
+  ],
+  "author": "navinkumar.c harish.v",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/1995navinkumar/signalling-server/issues"
+  },
+  "homepage": "https://github.com/1995navinkumar/signalling-server#readme"
+}
