@@ -3,6 +3,7 @@ const uuid = require("./uuid");
 const httpLogger = require("./http-logger");
 const bodyParser = require("body-parser");
 const peerParty = require("./services/peer-party");
+const createSocket = require("./services/peer-party/wss-server");
 
 // modules
 
@@ -20,6 +21,8 @@ app.use(httpLogger.res);
 
 app.use("/party",peerParty);
 
+//Creating websocket
+createSocket(app);
 
 // listen for request
 app.listen(process.env.port || 8000, function () {
