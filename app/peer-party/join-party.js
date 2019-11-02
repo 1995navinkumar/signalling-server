@@ -5,3 +5,12 @@ function joinParty(partyName){
         action : "join-party"
     });
 }
+
+var actions = {
+    "answer-request": function acceptOfferAndSendAnswer(data) {
+        var offer = data.offer;
+        console.log(offer);
+        // createPeerConnection(iceServers);
+        // masterPeer.onnegotiationneeded = handleNegotiationNeededEvent;
+    }
+}

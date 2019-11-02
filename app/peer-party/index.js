@@ -49,7 +49,7 @@ function messageParser(message) {
 
 function actionInvoker(data) {
     var action = data.action;
-    action ? actions[action]() : log(data);
+    action ? actions[action](data) : log(data);
 }
 
 function processMessage(message){
