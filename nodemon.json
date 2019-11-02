@@ -1,0 +1,11 @@
+{
+    "watch": [
+        "app",
+        "index.js"
+    ],
+    "ext" : "js",
+    "ignore": [
+        "node_modules",
+        "dist"
+    ]
+}

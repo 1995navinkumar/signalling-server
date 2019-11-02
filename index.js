@@ -2,13 +2,15 @@ const express = require("express");
 const uuid = require("./uuid");
 const httpLogger = require("./http-logger");
 const bodyParser = require("body-parser");
-const peerParty = require("./services/peer-party");
-const createSocket = require("./services/peer-party/wss-server");
+const Socket = require("./app/signalling-server/ws-server");
 
 // modules
 
 // instantiate
 const app = express();
+
+app.use(express.static('app/peer-party'));
+
 // adding unique id for every request
 app.use(uuid);
 
@@ -19,12 +21,10 @@ app.use(bodyParser.json());
 app.use(httpLogger.req);
 app.use(httpLogger.res);
 
-app.use("/party",peerParty);
-
 // listen for request
 app.listen(process.env.port || 8000, function () {
     console.log('server running on port', process.env.port || 8000);
 });
 
-//Creating websocket
-createSocket(app);
+// Creating websocket
+Socket(app);
