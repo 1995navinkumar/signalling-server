@@ -31,7 +31,7 @@ var actions = {
         var party = PartyManager.newParty(data.partyId);
         party.addClient("master", data.clientId);
     },
-    "join-party": function (data) {
+    "join-party": function joinParty(data) {
         var party = PartyManager.getParty(data.partyId);
         party.addClient("slave", data.clientId);
         var masterClient = party.getMasterClient();
@@ -40,13 +40,22 @@ var actions = {
             clientId: data.clientId
         });
     },
-    "offer": function createOffer(data) {
+    "offer": function sendOfferAndRequestAnswer(data) {
         var party = PartyManager.getParty(data.partyId);
         var client = party.getClient(data.clientId);
         client.description = data.offer;
         signal(party.getSlaveClients(),{
             action : "answer-request",
             offer : client.description
+        });
+    },
+    "answer" : function sendAnswer(data){
+        var party = PartyManager.getParty(data.partyId);
+        var client = party.getClient(data.clientId);
+        client.description = data.answer;
+        signal([party.getMasterClient()],{
+            action : "answer-response",
+            answer : client.description
         });
     }
 }

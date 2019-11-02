@@ -15,6 +15,9 @@ var actions = {
     "offer-request": function sendOffer() {
         createPeerConnection(iceServers);
         masterPeer.onnegotiationneeded = handleNegotiationNeededEvent;
+    },
+    "answer-response" : function acceptAnswer(data){
+        
     }
 }
 
