@@ -30,13 +30,9 @@ function createPeerConnection(iceServers) {
     slavePeer = new RTCPeerConnection({
         iceServers
     });
-    slavePeer.onnegotiationneeded = function () {
+    slavePeer.onnegotiationneeded = async function () {
         console.log("negotiation needed event slave");
         log(slavePeer.signalingState);
-        if (slavePeer.signalingState != "stable") {
-            log("     -- The connection isn't stable yet; postponing...")
-            return;
-        }
     }
     slavePeer.ontrack = streamReceiver;
     slavePeer.onicecandidate = handleSlaveICECandidateEvent
@@ -78,6 +74,7 @@ Object.assign(actions, {
             return;
         } else {
             log("  - Setting remote description");
+            await sendVideo();
             await slavePeer.setRemoteDescription(desc);
 
             let answer = await slavePeer.createAnswer(constraints);
