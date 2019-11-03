@@ -1,7 +1,7 @@
 var slavePeer;
 
 async function joinParty(partyName) {
-    await Socket({username : "harish"});
+    await Socket({ username: "harish" });
     sessionStorage.setItem("partyId", partyName);
 }
 
@@ -12,7 +12,7 @@ function streamReceiver({ streams: [stream] }) {
     videoPlayer.play();
 }
 
-async function sendVideo(){
+async function sendVideo() {
     log("add slave track");
     const gumStream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -29,12 +29,31 @@ async function sendVideo(){
 function createPeerConnection(iceServers) {
     slavePeer = new RTCPeerConnection({
         iceServers
-    });    
+    });
+    slavePeer.onnegotiationneeded = function () {
+        console.log("negotiation needed event slave");
+        log(slavePeer.signalingState);
+        if (slavePeer.signalingState != "stable") {
+            log("     -- The connection isn't stable yet; postponing...")
+            return;
+        }
+    }
     slavePeer.ontrack = streamReceiver;
+    slavePeer.onicecandidate = handleSlaveICECandidateEvent
+}
+
+function handleSlaveICECandidateEvent(event) {
+    log("ice candidate handling");
+    if (event.candidate) {
+        signal({
+            action: "offer-candidate",
+            candidate: event.candidate
+        })
+    }
 }
 
 Object.assign(actions, {
-    "connection-success" : function(){
+    "connection-success": function () {
         signal({
             clientType: "slave",
             action: "join-party"
@@ -74,7 +93,6 @@ Object.assign(actions, {
     "set-remote-candidate": function setRemoteCandidate({ candidate: remoteCandidate }) {
         var candidate = new RTCIceCandidate(remoteCandidate);
         log("Adding received ICE candidate from master");
-
         slavePeer.addIceCandidate(candidate)
     }
 });

@@ -1,12 +1,12 @@
 var masterPeer;
 
 async function createParty(partyName) {
-    await Socket({username : "navin"});
+    await Socket({ username: "navin" });
     sessionStorage.setItem("partyId", partyName);
 }
 
-Object.assign(actions,{
-    "connection-success" : function(){
+Object.assign(actions, {
+    "connection-success": function () {
         signal({
             clientType: "master",
             action: "create-party"
@@ -14,13 +14,16 @@ Object.assign(actions,{
     },
     "offer-request": function sendOffer() {
         createPeerConnection(iceServers);
-        //Event triggered when negotiation can take place as RTCpeer won't be stable
-        masterPeer.onnegotiationneeded = handleNegotiationNeededEvent;
     },
     "answer-response": async function acceptAnswer(data) {
         var desc = new RTCSessionDescription(data.answer);
         await masterPeer.setRemoteDescription(desc);
         log("Master Remote Description is set");
+    },
+    "set-remote-candidate": function setRemoteCandidate({ candidate: remoteCandidate }) {
+        var candidate = new RTCIceCandidate(remoteCandidate);
+        log("Adding received ICE candidate from slave");
+        masterPeer.addIceCandidate(candidate);
     }
 })
 
@@ -39,10 +42,12 @@ function createPeerConnection(iceServers) {
 
     masterPeer.onicecandidate = handleMasterICECandidateEvent;
     masterPeer.ontrack = streamReceiver;
+    //Event triggered when negotiation can take place as RTCpeer won't be stable
+    masterPeer.onnegotiationneeded = handleNegotiationNeededEvent;
     // masterPeer.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
 }
 
-async function sendVideo(){
+async function sendVideo() {
     log("add master track");
     const gumStream = await navigator.mediaDevices.getUserMedia({
         video: true,

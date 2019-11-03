@@ -6,7 +6,7 @@ let wss;
 
 function noop() {
     console.log("pinging active clients");
- }
+}
 
 function heartbeat() {
     this.isAlive = true;
@@ -19,7 +19,7 @@ module.exports = function Socket() {
         ws.on('message', pipe(messageParser, actionInvoker));
         ws.isAlive = true;
         ws.on('pong', heartbeat);
-        ws.on("close",function(){
+        ws.on("close", function () {
             console.log("terminating broken connections");
             liveSockets[ws.protocol] = undefined;
         })
@@ -92,10 +92,17 @@ var actions = {
     },
     "offer-candidate": function offerCandidate(data) {
         var party = PartyManager.getParty(data.partyId);
-        signal(party.getSlaveClients(), {
+        var client = party.getClient(data.clientId);
+        var clientType = client.type;
+        var message = {
             action: "set-remote-candidate",
             candidate: data.candidate
-        });
+        };
+        if (clientType == "master") {
+            signal(party.getSlaveClients(), message);
+        } else {
+            signal([party.getMasterClient()], message);
+        }
     }
 }
 
