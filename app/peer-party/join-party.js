@@ -20,6 +20,7 @@ async function sendVideo(){
     });
 
     for (const track of gumStream.getTracks()) {
+        log(track);
         slavePeer.addTrack(track, gumStream);
     }
 }

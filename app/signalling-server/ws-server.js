@@ -2,22 +2,50 @@ const WebSocket = require("ws");
 const uuidv1 = require("uuid/v1");
 const pipe = (...fns) => x => fns.reduce((y, f) => f(y), x);
 let liveSockets = {};
+let wss;
+
+function noop() {
+    console.log("pinging active clients");
+ }
+
+function heartbeat() {
+    this.isAlive = true;
+}
 
 module.exports = function Socket() {
-    const wsServer = new WebSocket.Server({ port: 8080 });
-    wsServer.on('connection', function connection(ws, req) {
+    wss = new WebSocket.Server({ port: 8080 });
+    wss.on('connection', function connection(ws, req) {
         storeClientWS(ws);
         ws.on('message', pipe(messageParser, actionInvoker));
+        ws.isAlive = true;
+        ws.on('pong', heartbeat);
+        ws.on("close",function(){
+            console.log("terminating broken connections");
+            liveSockets[ws.protocol] = undefined;
+        })
     });
 }
 
+setInterval(function ping() {
+    wss.clients.forEach(function each(ws) {
+        if (ws.isAlive === false) {
+            console.log("terminating broken connections");
+            return ws.terminate();
+        }
+
+        ws.isAlive = false;
+        ws.ping(noop);
+    });
+}, 30000);
+
 function storeClientWS(ws, req) {
     //has to improve
-    var uuid = uuidv1();
-    liveSockets[uuid] = ws;
+    var user = ws.protocol;
+    // var uuid = uuidv1();
+    liveSockets[user] = ws;
     ws.send(JSON.stringify({
-        action : "connection",
-        uuid
+        action: "connection",
+        uuid: user
     }));
 }
 
@@ -48,33 +76,33 @@ var actions = {
         var party = PartyManager.getParty(data.partyId);
         var client = party.getClient(data.clientId);
         client.description = data.offer;
-        signal(party.getSlaveClients(),{
-            action : "answer-request",
-            offer : client.description
+        signal(party.getSlaveClients(), {
+            action: "answer-request",
+            offer: client.description
         });
     },
-    "answer" : function sendAnswer(data){
+    "answer": function sendAnswer(data) {
         var party = PartyManager.getParty(data.partyId);
         var client = party.getClient(data.clientId);
         client.description = data.answer;
-        signal([party.getMasterClient()],{
-            action : "answer-response",
-            answer : client.description
+        signal([party.getMasterClient()], {
+            action: "answer-response",
+            answer: client.description
         });
     },
     "offer-candidate": function offerCandidate(data) {
         var party = PartyManager.getParty(data.partyId);
-        signal(party.getSlaveClients(),{
-            action : "set-remote-candidate",
-            candidate : data.candidate
+        signal(party.getSlaveClients(), {
+            action: "set-remote-candidate",
+            candidate: data.candidate
         });
     }
 }
 
 function signal(clients, message) {
-    console.log(Object.keys(liveSockets));
     clients.forEach(client => {
         var socket = liveSockets[client.id];
+        console.log(`signalling socket with clientId : ${client.id}`);
         socket.send(JSON.stringify(message));
     })
 }
