@@ -28,9 +28,11 @@
 <body>
     <button id="createParty">Create Party</button>
     <button id="joinParty">Join Party</button>
+    <button id="sendVideo">Send video</button>
     <script>
         var createPartyButton = document.getElementById("createParty");
         var joinPartyButton = document.getElementById("joinParty");
+        var sendVideoButton = document.getElementById("sendVideo");
 
         createPartyButton.addEventListener("click", function () {
             AssetLoader.require("create-party").then(module => {
@@ -45,7 +47,12 @@
                 joinParty("navin");
             });
         });
+
+        sendVideoButton.onclick = () => {
+            sendVideo();
+        }
     </script>
+    <video class="video-player" controls></video>
 </body>
 
 </html>

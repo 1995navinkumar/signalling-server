@@ -6,9 +6,6 @@ function createParty(partyName) {
         clientType: "master",
         action: "create-party"
     });
-    // createPeerConnection(iceServers);
-    //Event triggered when negotiation can take place as RTCpeer won't be stable
-    // masterPeer.onnegotiationneeded = handleNegotiationNeededEvent;
 }
 
 var actions = {
@@ -17,7 +14,8 @@ var actions = {
         masterPeer.onnegotiationneeded = handleNegotiationNeededEvent;
     },
     "answer-response" : function acceptAnswer(data){
-        
+        var desc = new RTCSessionDescription(data.answer);
+        masterPeer.setRemoteDescription(desc).then(() => console.log(masterPeer.remoteDescription));
     }
 }
 
@@ -25,28 +23,30 @@ function createPeerConnection(iceServers) {
     masterPeer = new RTCPeerConnection({
         iceServers
     });
-    // RTC Data Channel
-    channel = masterPeer.createDataChannel("peer-party");
-    channel.onopen = handleChannelStatusChange;
-    channel.onclose = handleChannelStatusChange;
 
-    // peer.ondatachannel = receiveChannelCallback;
-
-    // peer.onicecandidate = handleMasterICECandidateEvent;
-    // peer.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
+    masterPeer.onicecandidate = handleMasterICECandidateEvent;
+    // masterPeer.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
 }
 
+async function sendVideo(){
+    const gumStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+    });
 
+    for (const track of gumStream.getTracks()) {
+        masterPeer.addTrack(track, gumStream);
+    }
+}
 
-function handleChannelStatusChange(e) {
-    log("state of data channel" + sendChannel.readyState);
-    // if (sendChannel) {
-    //     var state = sendChannel.readyState;
-    //     log("channel status changed => " + state);
-    //     if (state === "open") {
-
-    //     }
-    // }
+function handleMasterICECandidateEvent(event) {
+    log("ice candidate handling");
+    if (event.candidate) {
+        signal({
+            action: "offer-candidate",
+            candidate: event.candidate
+        })
+    }
 }
 
 async function handleNegotiationNeededEvent() {

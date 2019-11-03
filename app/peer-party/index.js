@@ -1,4 +1,4 @@
-localStorage.clear();
+// sessionStorage.clear();
 
 const servers = {
     urls: "stun:stun1.l.google.com:19302"
@@ -10,7 +10,7 @@ const turnServer = {
     username: '28224511:1379330808'
 }
 
-const iceServers = [servers];
+const iceServers = [servers,turnServer];
 
 const log = console.log;
 
@@ -23,7 +23,8 @@ const offerOptions = {
 };
 
 const clientId = uuid();
-localStorage.setItem("clientId",clientId);
+console.log(clientId);
+sessionStorage.setItem("clientId",clientId);
 
 const socket = (function Socket() {
     document.cookie = `clientId=${clientId}`;
@@ -53,8 +54,8 @@ function actionInvoker(data) {
 }
 
 function processMessage(message){
-    var clientId = localStorage.getItem("clientId");
-    var partyId = localStorage.getItem("partyId");
+    var clientId = sessionStorage.getItem("clientId");
+    var partyId = sessionStorage.getItem("partyId");
     var finalMessage =  Object.assign({},{clientId,partyId},message);
     return JSON.stringify(finalMessage);
 }

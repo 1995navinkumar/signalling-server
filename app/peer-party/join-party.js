@@ -1,4 +1,5 @@
 var slavePeer;
+var videoElement = document.querySelector(".video-player");
 
 function joinParty(partyName) {
     localStorage.setItem("partyId", partyName);
@@ -8,18 +9,18 @@ function joinParty(partyName) {
     });
 }
 
+function streamReceiver({streams: [stream]}) {
+    log(stream);
+    if(videoElement.srcObject) return;
+    videoElement.srcObject = stream;
+}
+
 function createPeerConnection(iceServers) {
     slavePeer = new RTCPeerConnection({
         iceServers
     });
-    // RTC Data Channel
-    // channel.onopen = handleChannelStatusChange;
-    // channel.onclose = handleChannelStatusChange;
 
-    // peer.ondatachannel = receiveChannelCallback;
-
-    // peer.onicecandidate = handleMasterICECandidateEvent;
-    // peer.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
+    slavePeer.ontrack = streamReceiver;
 }
 
 var actions = {
@@ -52,5 +53,11 @@ var actions = {
                 answer: slavePeer.localDescription
             });
         }
+    },
+    "set-remote-candidate": function setRemoteCandidate({candidate: remoteCandidate}) {
+        var candidate = new RTCIceCandidate(remoteCandidate);
+        log("Adding received ICE candidate from master");
+    
+        slavePeer.addIceCandidate(candidate)
     }
 }

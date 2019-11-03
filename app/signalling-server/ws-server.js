@@ -57,6 +57,13 @@ var actions = {
             action : "answer-response",
             answer : client.description
         });
+    },
+    "offer-candidate": function offerCandidate(data) {
+        var party = PartyManager.getParty(data.partyId);
+        signal(party.getSlaveClients(),{
+            action : "set-remote-candidate",
+            candidate : data.candidate
+        });
     }
 }
 
