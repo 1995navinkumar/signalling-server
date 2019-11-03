@@ -1,5 +1,4 @@
 var slavePeer;
-var videoElement = document.querySelector(".video-player");
 
 async function joinParty(partyName) {
     await Socket({username : "harish"});
@@ -8,17 +7,28 @@ async function joinParty(partyName) {
 
 function streamReceiver({ streams: [stream] }) {
     log(stream);
-    if (videoElement.srcObject) return;
-    videoElement.srcObject = stream;
+    if (videoPlayer.srcObject) return;
+    videoPlayer.srcObject = stream;
+    videoPlayer.play();
+}
+
+async function sendVideo(){
+    log("add slave track");
+    const gumStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+    });
+
+    for (const track of gumStream.getTracks()) {
+        slavePeer.addTrack(track, gumStream);
+    }
 }
 
 
 function createPeerConnection(iceServers) {
     slavePeer = new RTCPeerConnection({
         iceServers
-    });
-
-    
+    });    
     slavePeer.ontrack = streamReceiver;
 }
 

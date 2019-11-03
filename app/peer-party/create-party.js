@@ -24,16 +24,26 @@ Object.assign(actions,{
     }
 })
 
+function streamReceiver({ streams: [stream] }) {
+    log(stream);
+    log("hello");
+    if (videoPlayer.srcObject) return;
+    videoPlayer.srcObject = stream;
+    videoPlayer.play();
+}
+
 function createPeerConnection(iceServers) {
     masterPeer = new RTCPeerConnection({
         iceServers
     });
 
     masterPeer.onicecandidate = handleMasterICECandidateEvent;
+    masterPeer.ontrack = streamReceiver;
     // masterPeer.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
 }
 
 async function sendVideo(){
+    log("add master track");
     const gumStream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true
