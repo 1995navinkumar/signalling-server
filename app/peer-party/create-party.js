@@ -11,11 +11,13 @@ function createParty(partyName) {
 var actions = {
     "offer-request": function sendOffer() {
         createPeerConnection(iceServers);
+        //Event triggered when negotiation can take place as RTCpeer won't be stable
         masterPeer.onnegotiationneeded = handleNegotiationNeededEvent;
     },
-    "answer-response" : function acceptAnswer(data){
+    "answer-response": async function acceptAnswer(data) {
         var desc = new RTCSessionDescription(data.answer);
-        masterPeer.setRemoteDescription(desc).then(() => console.log(masterPeer.remoteDescription));
+        await masterPeer.setRemoteDescription(desc);
+        log("Master Remote Description is set");
     }
 }
 
