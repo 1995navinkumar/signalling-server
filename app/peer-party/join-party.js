@@ -1,29 +1,34 @@
 var slavePeer;
 var videoElement = document.querySelector(".video-player");
 
-function joinParty(partyName) {
-    localStorage.setItem("partyId", partyName);
-    signal({
-        clientType: "slave",
-        action: "join-party"
-    });
+async function joinParty(partyName) {
+    await Socket({username : "harish"});
+    sessionStorage.setItem("partyId", partyName);
 }
 
-function streamReceiver({streams: [stream]}) {
+function streamReceiver({ streams: [stream] }) {
     log(stream);
-    if(videoElement.srcObject) return;
+    if (videoElement.srcObject) return;
     videoElement.srcObject = stream;
 }
+
 
 function createPeerConnection(iceServers) {
     slavePeer = new RTCPeerConnection({
         iceServers
     });
 
+    
     slavePeer.ontrack = streamReceiver;
 }
 
-var actions = {
+Object.assign(actions, {
+    "connection-success" : function(){
+        signal({
+            clientType: "slave",
+            action: "join-party"
+        });
+    },
     "answer-request": async function acceptOfferAndSendAnswer(data) {
         var desc = new RTCSessionDescription(data.offer);
 
@@ -53,11 +58,12 @@ var actions = {
                 answer: slavePeer.localDescription
             });
         }
+
     },
-    "set-remote-candidate": function setRemoteCandidate({candidate: remoteCandidate}) {
+    "set-remote-candidate": function setRemoteCandidate({ candidate: remoteCandidate }) {
         var candidate = new RTCIceCandidate(remoteCandidate);
         log("Adding received ICE candidate from master");
-    
+
         slavePeer.addIceCandidate(candidate)
     }
-}
+});

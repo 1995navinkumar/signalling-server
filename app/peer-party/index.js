@@ -1,4 +1,4 @@
-// sessionStorage.clear();
+sessionStorage.clear();
 
 const servers = {
     urls: "stun:stun1.l.google.com:19302"
@@ -10,7 +10,7 @@ const turnServer = {
     username: '28224511:1379330808'
 }
 
-const iceServers = [servers,turnServer];
+const iceServers = [servers, turnServer];
 
 const log = console.log;
 
@@ -22,25 +22,33 @@ const offerOptions = {
     offerToReceiveAudio: 1,
 };
 
-const clientId = uuid();
-console.log(clientId);
-sessionStorage.setItem("clientId",clientId);
+let socket;
 
-const socket = (function Socket() {
-    document.cookie = `clientId=${clientId}`;
-    var connection = new WebSocket("ws://localhost:8080");
-    connection.onopen = function () {
-        log("socket connection established ");
+function Socket({username}) {
+    return new Promise((resolve, reject) => {
+        var hostName = location.hostname;
+        var connection = new WebSocket(`ws://${hostName}:8080?user=${username}`);
+        connection.onopen = function (e, f) {
+            log("socket connection established ");
+            resolve(connection);
+        }
+        connection.onmessage = pipe(messageParser, actionInvoker);
+        connection.onerror = function (e) {
+            log("error in connection establishment");
+            reject(e);
+        }
+        socket = connection;
+    });
+};
+
+var actions = {
+    "connection" : function(data){
+        sessionStorage.setItem("uuid",data.uuid);
+        actions["connection-success"](data);
     }
-    connection.onmessage = pipe(messageParser,actionInvoker);
+}
 
-    connection.onerror = function () {
-        log("error in connection establishment");
-    }
-    return connection;
-})();
-
-function signal(message){
+function signal(message) {
     socket.send(processMessage(message));
 }
 
@@ -53,9 +61,9 @@ function actionInvoker(data) {
     action ? actions[action](data) : log(data);
 }
 
-function processMessage(message){
-    var clientId = sessionStorage.getItem("clientId");
+function processMessage(message) {
+    var clientId = sessionStorage.getItem("uuid");
     var partyId = sessionStorage.getItem("partyId");
-    var finalMessage =  Object.assign({},{clientId,partyId},message);
+    var finalMessage = Object.assign({}, { clientId, partyId }, message);
     return JSON.stringify(finalMessage);
 }

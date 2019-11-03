@@ -1,20 +1,24 @@
 const WebSocket = require("ws");
+const uuidv1 = require("uuid/v1");
 const pipe = (...fns) => x => fns.reduce((y, f) => f(y), x);
 let liveSockets = {};
 
 module.exports = function Socket() {
     const wsServer = new WebSocket.Server({ port: 8080 });
     wsServer.on('connection', function connection(ws, req) {
-        storeClientWS(ws, req);
+        storeClientWS(ws);
         ws.on('message', pipe(messageParser, actionInvoker));
     });
 }
 
 function storeClientWS(ws, req) {
     //has to improve
-    var cookie = req.headers.cookie;
-    var clientId = cookie.split("=")[1];
-    liveSockets[clientId] = ws;
+    var uuid = uuidv1();
+    liveSockets[uuid] = ws;
+    ws.send(JSON.stringify({
+        action : "connection",
+        uuid
+    }));
 }
 
 function messageParser(message) {
@@ -68,6 +72,7 @@ var actions = {
 }
 
 function signal(clients, message) {
+    console.log(Object.keys(liveSockets));
     clients.forEach(client => {
         var socket = liveSockets[client.id];
         socket.send(JSON.stringify(message));

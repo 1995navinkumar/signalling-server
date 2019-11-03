@@ -1,14 +1,17 @@
 var masterPeer;
 
-function createParty(partyName) {
-    localStorage.setItem("partyId", partyName);
-    signal({
-        clientType: "master",
-        action: "create-party"
-    });
+async function createParty(partyName) {
+    await Socket({username : "navin"});
+    sessionStorage.setItem("partyId", partyName);
 }
 
-var actions = {
+Object.assign(actions,{
+    "connection-success" : function(){
+        signal({
+            clientType: "master",
+            action: "create-party"
+        });
+    },
     "offer-request": function sendOffer() {
         createPeerConnection(iceServers);
         //Event triggered when negotiation can take place as RTCpeer won't be stable
@@ -19,7 +22,7 @@ var actions = {
         await masterPeer.setRemoteDescription(desc);
         log("Master Remote Description is set");
     }
-}
+})
 
 function createPeerConnection(iceServers) {
     masterPeer = new RTCPeerConnection({
