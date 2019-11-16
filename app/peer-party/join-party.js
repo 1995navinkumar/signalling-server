@@ -7,15 +7,14 @@ async function joinParty(partyName) {
 
 function streamReceiver({ streams: [stream] }) {
     log(stream);
-    if (videoPlayer.srcObject) return;
-    videoPlayer.srcObject = stream;
-    videoPlayer.play();
+    if (audioPlayer.srcObject) return;
+    audioPlayer.srcObject = stream;
+    audioPlayer.play();
 }
 
-async function sendVideo() {
+async function sendAudio() {
     log("add slave track");
     const gumStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
         audio: true
     });
 
@@ -74,7 +73,7 @@ Object.assign(actions, {
             return;
         } else {
             log("  - Setting remote description");
-            await sendVideo();
+            await sendAudio();
             await slavePeer.setRemoteDescription(desc);
 
             let answer = await slavePeer.createAnswer(constraints);

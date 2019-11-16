@@ -30,9 +30,9 @@ Object.assign(actions, {
 function streamReceiver({ streams: [stream] }) {
     log(stream);
     log("hello");
-    if (videoPlayer.srcObject) return;
-    videoPlayer.srcObject = stream;
-    videoPlayer.play();
+    if (audioPlayer.srcObject) return;
+    audioPlayer.srcObject = stream;
+    audioPlayer.play();
 }
 
 function createPeerConnection(iceServers) {
@@ -47,10 +47,9 @@ function createPeerConnection(iceServers) {
     // masterPeer.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
 }
 
-async function sendVideo() {
+async function sendAudio() {
     log("add master track");
     const gumStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
         audio: true
     });
 

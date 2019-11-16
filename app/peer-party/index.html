@@ -27,20 +27,17 @@
 </head>
 
 <body>
-    <div class="video-container">
-        <video id="video-player" controls></video>
-    </div>
+    <audio id="audio-player" autoplay controls></audio>
     <div class="controls">
         <button id="createParty">Create Party</button>
         <button id="joinParty">Join Party</button>
-        <button id="sendVideo">Send video</button>
+        <button id="sendAudio">Send Audio</button>
     </div>
 
     <script>
         var createPartyButton = document.getElementById("createParty");
         var joinPartyButton = document.getElementById("joinParty");
-        var sendVideoButton = document.getElementById("sendVideo");
-        var videoPlayer = document.getElementById("video-player");
+        var sendAudioButton = document.getElementById("sendAudio");
 
         createPartyButton.addEventListener("click", function () {
             AssetLoader.require("create-party").then(module => {
@@ -60,10 +57,12 @@
             });
         });
 
-        sendVideoButton.onclick = () => {
-            sendVideoButton.disabled = true;
-            sendVideo();
+        sendAudioButton.onclick = () => {
+            sendAudioButton.disabled = true;
+            sendAudio();
         }
+
+        var audioPlayer = document.getElementById("audio-player");
     </script>
 
 </body>
