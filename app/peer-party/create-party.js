@@ -13,7 +13,7 @@
         sessionStorage.setItem("partyId", partyName);
     }
 
-    Object.assign(actions, {
+    window.actions =  {
         "connection": function (data) {
             console.log(data);
             sessionStorage.setItem("uuid", data.uuid);
@@ -39,7 +39,7 @@
             log("Adding received ICE candidate from slave");
             masterPeer.addIceCandidate(candidate);
         }
-    })
+    };
 
     function streamReceiver({ streams: [stream] }) {
         log(stream);
