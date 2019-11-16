@@ -43,8 +43,14 @@ function Socket({username}) {
 
 var actions = {
     "connection" : function(data){
+        console.log(data);
         sessionStorage.setItem("uuid",data.uuid);
-        actions["connection-success"](data);
+        if(data.uuid == "navin") {
+            actions["connection-success-create"](data);
+        } else {
+            actions["connection-success-join"](data);
+        }
+       
     }
 }
 

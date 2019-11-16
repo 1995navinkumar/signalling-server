@@ -1,4 +1,4 @@
-(async function partyCreator(partyName) {
+(async function partyCreator() {
     var masterPeer;
     chrome.runtime.onMessage.addListener(function handler(message) {
         var type = message.type;
@@ -8,13 +8,14 @@
             sendAudio();
         }
     })
-    async function createParty() {
+    async function createParty(partyName) {
         await Socket({ username: "navin" });
         sessionStorage.setItem("partyId", partyName);
     }
 
     Object.assign(actions, {
         "connection-success": function () {
+            console.log("connection success");
             signal({
                 clientType: "master",
                 action: "create-party"

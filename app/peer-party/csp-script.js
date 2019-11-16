@@ -1,21 +1,3 @@
-import { DH_CHECK_P_NOT_PRIME } from "constants";
-
-var dependencyConfig = {
-    "create-party": {
-        id: "create-party",
-        type: "script",
-        url: "./create-party.js"
-    },
-    "join-party": {
-        id: "join-party",
-        type: "script",
-        url: "./join-party.js"
-    }
-}
-AssetLoader.setDependencyConfig(dependencyConfig);
-
-//---------------------------------------------------------------------------------------
-
 var createPartyButton, joinPartyButton, sendAudioButton, audioPlayer;
 document.addEventListener("DOMContentLoaded", function addListeners() {
     createPartyButton = document.getElementById("createParty");
