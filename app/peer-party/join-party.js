@@ -6,9 +6,9 @@
         sessionStorage.setItem("partyId", partyName);
     }
     
-    chrome.runtime.onMessage.addListener(({message,data}) => {
-        if(message == "joinParty") {
-            joinParty(data);
+    chrome.runtime.onMessage.addListener((message) => {
+        if(message.type == "join-party") {
+            joinParty(message.partyName);
         }
     });
     
@@ -54,8 +54,13 @@
         }
     }
     
-    Object.assign(actions, {
-        "connection-success": function () {
+    let actions = {
+        "connection" : function(data){
+            console.log(data);
+            sessionStorage.setItem("uuid",data.uuid);
+                actions["connection-success-join"](data);           
+        },
+        "connection-success-join": function () {
             signal({
                 clientType: "slave",
                 action: "join-party"
@@ -80,7 +85,7 @@
                 return;
             } else {
                 log("  - Setting remote description");
-                await sendAudio();
+                // await sendAudio();
                 await slavePeer.setRemoteDescription(desc);
     
                 let answer = await slavePeer.createAnswer(constraints);
@@ -100,5 +105,5 @@
                 slavePeer.addIceCandidate(candidate)
             }
         }
-    });
+    };
 })();

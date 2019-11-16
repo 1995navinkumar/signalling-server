@@ -14,7 +14,7 @@
     }
 
     Object.assign(actions, {
-        "connection-success": function () {
+        "connection-success-create": function () {
             console.log("connection success");
             signal({
                 clientType: "master",
