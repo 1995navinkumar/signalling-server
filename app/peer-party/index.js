@@ -22,12 +22,31 @@ const offerOptions = {
     offerToReceiveAudio: 1,
 };
 
-let socket;
+let socket, sendAudio;
 
-function Socket({username}) {
+var actions = {
+    "connection": function (data) {
+        console.log(data);
+        sessionStorage.setItem("uuid", data.uuid);
+        actions["connection-success"](data);
+    }
+};
+
+chrome.runtime.onMessage.addListener(function handler(message) {
+    var type = message.type;
+    if (type == "create-party") {
+        sendAudio = partyCreator(message.partyName, actions);
+    } else if (type == "send-audio") {
+        sendAudio();
+    } else if (type == "join-party") {
+        partyJoiner(message.partyName, actions);
+    }
+})
+
+function Socket({ username }) {
     return new Promise((resolve, reject) => {
         var hostName = location.hostname;
-        var connection = new WebSocket(`ws://navin-5490:8080`,username);
+        var connection = new WebSocket(`ws://navin-5490:8080`, username);
         connection.onopen = function (e, f) {
             log("socket connection established ");
             resolve(connection);
