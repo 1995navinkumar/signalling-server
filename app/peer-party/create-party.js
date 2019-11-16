@@ -29,7 +29,6 @@ Object.assign(actions, {
 
 function streamReceiver({ streams: [stream] }) {
     log(stream);
-    log("hello");
     if (audioPlayer.srcObject) return;
     audioPlayer.srcObject = stream;
     audioPlayer.play();
@@ -49,13 +48,6 @@ function createPeerConnection(iceServers) {
 
 async function sendAudio() {
     log("add master track");
-    // const gumStream = await navigator.mediaDevices.getUserMedia({
-    //     audio: true
-    // });
-
-    // for (const track of gumStream.getTracks()) {
-    //     masterPeer.addTrack(track, gumStream);
-    // }
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.tabCapture.capture({ audio: true }, (stream) => {
             log(stream);
