@@ -1,3 +1,5 @@
+import { DH_CHECK_P_NOT_PRIME } from "constants";
+
 var dependencyConfig = {
     "create-party": {
         id: "create-party",
@@ -21,12 +23,9 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
     sendAudioButton = document.getElementById("sendAudio");
 
     createPartyButton.addEventListener("click", function () {
-        AssetLoader.require("create-party").then(module => {
-            // var partyName = prompt("Enter new party name to create","");
-            createParty("navin");
-            joinPartyButton.disabled = true;
-            createPartyButton.disabled = true;
-        });
+        chrome.runtime.sendMessage({type : "create-party",partyName : "navin"});
+        joinPartyButton.disabled = true;
+        createPartyButton.disabled = true;
     });
 
     joinPartyButton.addEventListener("click", function () {
@@ -40,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
 
     sendAudioButton.onclick = () => {
         sendAudioButton.disabled = true;
-        sendAudio();
+        chrome.runtime.sendMessage({type : "send-audio",});
     }
 
     audioPlayer = document.getElementById("audio-player");
