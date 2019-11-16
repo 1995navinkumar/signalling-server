@@ -1,24 +1,7 @@
-(async function partyCreator() {
+async function partyCreator(partyName, actions) {
     var masterPeer;
-    chrome.runtime.onMessage.addListener(function handler(message) {
-        var type = message.type;
-        if (type == "create-party") {
-            createParty(message.partyName);
-        } else if (type == "send-audio") {
-            sendAudio();
-        }
-    })
-    async function createParty(partyName) {
-        await Socket({ username: "navin" });
-        sessionStorage.setItem("partyId", partyName);
-    }
 
-    window.actions =  {
-        "connection": function (data) {
-            console.log(data);
-            sessionStorage.setItem("uuid", data.uuid);
-            actions["connection-success"](data);
-        },
+    Object.assign(actions, {
         "connection-success": function () {
             console.log("connection success");
             signal({
@@ -39,7 +22,13 @@
             log("Adding received ICE candidate from slave");
             masterPeer.addIceCandidate(candidate);
         }
-    };
+    });
+
+    
+    await Socket({ username: "navin" });
+    sessionStorage.setItem("partyId", partyName);
+
+
 
     function streamReceiver({ streams: [stream] }) {
         log(stream);
@@ -108,4 +97,5 @@
             log(`Failed in Negotiation ${error}`)
         }
     }
-})();
+    return sendAudio;
+};
