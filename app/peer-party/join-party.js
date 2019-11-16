@@ -87,8 +87,10 @@ Object.assign(actions, {
 
     },
     "set-remote-candidate": function setRemoteCandidate({ candidate: remoteCandidate }) {
-        var candidate = new RTCIceCandidate(remoteCandidate);
-        log("Adding received ICE candidate from master");
-        slavePeer.addIceCandidate(candidate)
+        if (slavePeer.remoteDescription) {
+            var candidate = new RTCIceCandidate(remoteCandidate);
+            log("Adding received ICE candidate from master");
+            slavePeer.addIceCandidate(candidate)
+        }
     }
 });
