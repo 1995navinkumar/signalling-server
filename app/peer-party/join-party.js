@@ -54,14 +54,14 @@ async function partyJoiner(partyName, actions) {
         }
     });
 
-    await Socket({ username: "harish" });
+    await Socket({ username: "harish"+Math.random() });
     sessionStorage.setItem("partyId", partyName);
 
     function streamReceiver({ streams: [stream] }) {
         log(stream);
-        if (audioPlayer.srcObject) return;
-        audioPlayer.srcObject = stream;
-        audioPlayer.play();
+        let audio = new Audio();
+        audio.srcObject = stream;
+        audio.play();
     }
 
     // async function sendAudio() {

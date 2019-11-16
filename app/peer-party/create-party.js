@@ -1,5 +1,5 @@
 async function partyCreator(partyName, actions) {
-    var masterPeer;
+    var masterPeer,liveStream,peerList = [];
 
     Object.assign(actions, {
         "connection-success": function () {
@@ -14,18 +14,18 @@ async function partyCreator(partyName, actions) {
         },
         "answer-response": async function acceptAnswer(data) {
             var desc = new RTCSessionDescription(data.answer);
-            await masterPeer.setRemoteDescription(desc);
+            await peerList[username].setRemoteDescription(desc);
             log("Master Remote Description is set");
         },
         "set-remote-candidate": function setRemoteCandidate({ candidate: remoteCandidate }) {
             var candidate = new RTCIceCandidate(remoteCandidate);
             log("Adding received ICE candidate from slave");
-            masterPeer.addIceCandidate(candidate);
+            peerList[username].addIceCandidate(candidate);
         }
     });
 
-    
-    await Socket({ username: "navin" });
+    let username = "navin"+Math.random();
+    await Socket({ username });
     sessionStorage.setItem("partyId", partyName);
 
 
@@ -38,7 +38,7 @@ async function partyCreator(partyName, actions) {
     }
 
     function createPeerConnection(iceServers) {
-        masterPeer = new RTCPeerConnection({
+        let masterPeer = new RTCPeerConnection({
             iceServers
         });
 
@@ -47,17 +47,24 @@ async function partyCreator(partyName, actions) {
         //Event triggered when negotiation can take place as RTCpeer won't be stable
         masterPeer.onnegotiationneeded = handleNegotiationNeededEvent;
         // masterPeer.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
+        peerList[username] = masterPeer;
     }
 
     async function sendAudio() {
         log("add master track");
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            chrome.tabCapture.capture({ audio: true }, (stream) => {
-                log(stream);
-                for (const track of stream.getTracks()) {
-                    masterPeer.addTrack(track, stream);
+            if(liveStream){
+                chrome.tabCapture.capture({ audio: true }, (stream) => {
+                    liveStream = stream;
+                    for (const track of stream.getTracks()) {
+                        peerList[username].addTrack(track, stream);
+                    }
+                });
+            } else {
+                for (const track of liveStream.getTracks()) {
+                    peerList[username].addTrack(track, stream);
                 }
-            });
+            }
         });
     }
 
@@ -75,22 +82,22 @@ async function partyCreator(partyName, actions) {
         try {
             log("Negotiation started");
 
-            const offer = await masterPeer.createOffer(constraints);
+            const offer = await peerList[username].createOffer(constraints);
 
             // If the connection hasn't yet achieved the "stable" state,
             // return to the caller. Another negotiationneeded event
             // will be fired when the state stabilizes.
-            if (masterPeer.signalingState != "stable") {
+            if (peerList[username].signalingState != "stable") {
                 log("     -- The connection isn't stable yet; postponing...")
                 return;
             }
 
             log("Setting to local description");
-            await masterPeer.setLocalDescription(offer);
+            await peerList[username].setLocalDescription(offer);
 
             signal({
                 action: "offer",
-                offer: masterPeer.localDescription
+                offer: peerList[username].localDescription
             });
 
         } catch (error) {
