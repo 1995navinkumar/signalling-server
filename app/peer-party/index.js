@@ -41,19 +41,6 @@ function Socket({username}) {
     });
 };
 
-var actions = {
-    "connection" : function(data){
-        console.log(data);
-        sessionStorage.setItem("uuid",data.uuid);
-        if(data.uuid == "navin") {
-            actions["connection-success-create"](data);
-        } else {
-            actions["connection-success-join"](data);
-        }
-       
-    }
-}
-
 function signal(message) {
     socket.send(processMessage(message));
 }

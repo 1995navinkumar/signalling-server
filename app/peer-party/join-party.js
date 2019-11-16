@@ -58,9 +58,9 @@
         "connection" : function(data){
             console.log(data);
             sessionStorage.setItem("uuid",data.uuid);
-                actions["connection-success-join"](data);           
+                actions["connection-success"](data);           
         },
-        "connection-success-join": function () {
+        "connection-success": function () {
             signal({
                 clientType: "slave",
                 action: "join-party"
