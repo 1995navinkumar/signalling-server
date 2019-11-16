@@ -49,13 +49,21 @@ function createPeerConnection(iceServers) {
 
 async function sendAudio() {
     log("add master track");
-    const gumStream = await navigator.mediaDevices.getUserMedia({
-        audio: true
-    });
+    // const gumStream = await navigator.mediaDevices.getUserMedia({
+    //     audio: true
+    // });
 
-    for (const track of gumStream.getTracks()) {
-        masterPeer.addTrack(track, gumStream);
-    }
+    // for (const track of gumStream.getTracks()) {
+    //     masterPeer.addTrack(track, gumStream);
+    // }
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabCapture.capture({ audio: true }, (stream) => {
+            log(stream);
+            for (const track of stream.getTracks()) {
+                masterPeer.addTrack(track, stream);
+            }
+        });
+    });
 }
 
 function handleMasterICECandidateEvent(event) {

@@ -14,8 +14,8 @@
     "permissions": [
       "tabs",
       "tabCapture",
-      "activeTab",
-      "https://developer.chrome.com/extensions"
+      "audioCapture",
+      "activeTab"
     ]
   }
   
