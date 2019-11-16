@@ -8,7 +8,7 @@
     
     chrome.runtime.onMessage.addListener(({message,data}) => {
         if(message == "joinParty") {
-            joinParty(data.peerName);
+            joinParty(data);
         }
     });
     

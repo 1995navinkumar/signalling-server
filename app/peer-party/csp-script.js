@@ -29,12 +29,9 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
     });
 
     joinPartyButton.addEventListener("click", function () {
-        AssetLoader.require("join-party").then(module => {
-            // var partyName = prompt("Enter party name to join");
-            joinParty("navin");
-            createPartyButton.disabled = true;
-            joinPartyButton.disabled = true;
-        });
+        chrome.runtime.sendMessage({type : "join-party",partyName : "navin"});
+        joinPartyButton.disabled = true;
+        createPartyButton.disabled = true;
     });
 
     sendAudioButton.onclick = () => {
