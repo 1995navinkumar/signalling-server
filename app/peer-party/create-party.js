@@ -14,16 +14,12 @@
     }
 
     Object.assign(actions, {
-<<<<<<< HEAD
-        "connection-success-create": function () {
-=======
         "connection": function (data) {
             console.log(data);
             sessionStorage.setItem("uuid", data.uuid);
             actions["connection-success"](data);
         },
         "connection-success": function () {
->>>>>>> 0eb53178b1d7020b43922e7587628c152c4d8d2b
             console.log("connection success");
             signal({
                 clientType: "master",
