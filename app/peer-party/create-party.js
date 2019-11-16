@@ -14,6 +14,11 @@
     }
 
     Object.assign(actions, {
+        "connection": function (data) {
+            console.log(data);
+            sessionStorage.setItem("uuid", data.uuid);
+            actions["connection-success"](data);
+        },
         "connection-success": function () {
             console.log("connection success");
             signal({

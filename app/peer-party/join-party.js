@@ -55,7 +55,7 @@
     }
     
     Object.assign(actions, {
-        "connection-success": function () {
+        "connection-success-join": function () {
             signal({
                 clientType: "slave",
                 action: "join-party"
@@ -80,7 +80,7 @@
                 return;
             } else {
                 log("  - Setting remote description");
-                await sendAudio();
+                // await sendAudio();
                 await slavePeer.setRemoteDescription(desc);
     
                 let answer = await slavePeer.createAnswer(constraints);
