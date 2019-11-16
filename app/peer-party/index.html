@@ -9,21 +9,7 @@
     <link rel="stylesheet" href="app.css">
     <script src="./utils.js"></script>
     <script src="./index.js"></script>
-    <script>
-        var dependencyConfig = {
-            "create-party": {
-                id: "create-party",
-                type: "script",
-                url: "./create-party.js"
-            },
-            "join-party": {
-                id: "join-party",
-                type: "script",
-                url: "./join-party.js"
-            }
-        }
-        AssetLoader.setDependencyConfig(dependencyConfig);
-    </script>
+    <script src="./csp-script.js"></script>
 </head>
 
 <body>
@@ -33,38 +19,6 @@
         <button id="joinParty">Join Party</button>
         <button id="sendAudio">Send Audio</button>
     </div>
-
-    <script>
-        var createPartyButton = document.getElementById("createParty");
-        var joinPartyButton = document.getElementById("joinParty");
-        var sendAudioButton = document.getElementById("sendAudio");
-
-        createPartyButton.addEventListener("click", function () {
-            AssetLoader.require("create-party").then(module => {
-                // var partyName = prompt("Enter new party name to create","");
-                createParty("navin");
-                joinPartyButton.disabled = true;
-                createPartyButton.disabled = true;
-            });
-        });
-
-        joinPartyButton.addEventListener("click", function () {
-            AssetLoader.require("join-party").then(module => {
-                // var partyName = prompt("Enter party name to join");
-                joinParty("navin");
-                createPartyButton.disabled = true;
-                joinPartyButton.disabled = true;
-            });
-        });
-
-        sendAudioButton.onclick = () => {
-            sendAudioButton.disabled = true;
-            sendAudio();
-        }
-
-        var audioPlayer = document.getElementById("audio-player");
-    </script>
-
 </body>
 
 </html>
