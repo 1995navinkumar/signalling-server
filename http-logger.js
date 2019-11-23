@@ -6,6 +6,14 @@
  * ref; https://github.com/expressjs/morgan/issues/40
  */
 const morgan = require("morgan");
+const fs = require('fs');
+const path = require('path');
+const rfs = require('rotating-file-stream')
+
+var stream = rfs('serverout.log', {
+  interval: '1d', // rotate daily
+  path: path.join(__dirname, 'log')
+})
 
 morgan.token("id", function(req) {
 	return req.id;
@@ -13,9 +21,11 @@ morgan.token("id", function(req) {
 
 let req = morgan('--> :id [:date[clf]] :remote-addr :remote-user ":method :url "', {
   immediate: true,
+  stream,
+  interval : '1d'
 });
 let res = morgan('<-- :id [:date[clf]] ":method :url " :status :res[content-length] :response-time ms', {
-  immediate: false,
+  immediate: false
 });
 
 module.exports = { req, res };
