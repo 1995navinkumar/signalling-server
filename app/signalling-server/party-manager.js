@@ -1,15 +1,14 @@
 function PartyManager() {
     var activeParties = {};
-    function handleClientRequest(message) {
+    function handleClientRequest(connection,message) {
         var action = message.action;
-        var partyId = message.partyId;
-
+        var partyId = connection.partyId;
         if (action == "create-party") {
             createParty();
         } else if (action == "end-party") {
             endParty(partyId);
         } else {
-            getParty(partyId).handleClientRequest(message);
+            getParty(partyId).handleClientRequest(connection,message);
         }
     }
     function getParty(partyId) {

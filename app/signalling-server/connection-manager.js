@@ -25,7 +25,7 @@ function Connection(ws, sessionId) {
     this.connection.id = sessionId;
 }
 Connection.prototype.handleClientRequest = function handleClientRequest(message) {
-    PartyManager.handleClientRequest(message);
+    PartyManager.handleClientRequest(this,message);
 }
 
 module.exports = ConnectionManager();;
