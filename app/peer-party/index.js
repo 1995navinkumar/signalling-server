@@ -39,8 +39,6 @@ chrome.runtime.onMessage.addListener(function handler(message) {
             sendAudio = audio;
             console.log(sendAudio);
         });
-        
-        
     } else if (type == "send-audio") {
         sendAudio();
     } else if (type == "join-party") {

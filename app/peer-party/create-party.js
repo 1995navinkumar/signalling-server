@@ -5,7 +5,6 @@ async function partyCreator(partyName, actions) {
         "connection-success": function () {
             console.log("connection success");
             signal({
-                clientType: "master",
                 action: "create-party"
             });
         },
