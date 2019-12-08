@@ -2,7 +2,10 @@ const express = require("express");
 const uuid = require("./uuid");
 const httpLogger = require("./http-logger");
 const bodyParser = require("body-parser");
-const Socket = require("./app/signalling-server/ws-server");
+const Socket = require("./app/signalling-server/socket");
+const http = require('http');
+const WebSocket = require("ws");
+
 
 // modules
 
@@ -22,9 +25,12 @@ app.use(httpLogger.req);
 app.use(httpLogger.res);
 
 // listen for request
-app.listen(process.env.port || 8000, function () {
-    console.log('server running on port', process.env.port || 8000);
+const server = http.createServer(app);
+
+const wss = new WebSocket.Server({ clientTracking: false, noServer: true });
+server.listen(process.env.port || 8080, function () {
+    console.log('server running on port', process.env.port || 8080);
 });
 
 // Creating websocket
-Socket(app);
+Socket(server, wss);
