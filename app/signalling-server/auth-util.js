@@ -7,7 +7,7 @@ const AuthUtil = {
         password: "harish"
     }],
     authorize: function authorize(req) {
-        return req.sessionId || "navin";
+        return req.headers['sec-websocket-key']
     }
 }
 

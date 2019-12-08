@@ -51,6 +51,7 @@ chrome.runtime.onMessage.addListener(function handler(message) {
 function Socket({ username }) {
     return new Promise((resolve, reject) => {
         var hostName = location.hostname;
+        document.cookie = "sessionId=navin";
         var connection = new WebSocket(`ws://localhost:8080`, username);
         connection.onopen = function (e, f) {
             log("socket connection established ");

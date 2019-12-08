@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const Socket = require("./app/signalling-server/socket");
 const http = require('http');
 const WebSocket = require("ws");
+var cookieParser = require('cookie-parser')
 
 
 // modules
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 // log all http req/res 
 app.use(httpLogger.req);
 app.use(httpLogger.res);
+app.use(cookieParser())
 
 // listen for request
 const server = http.createServer(app);
