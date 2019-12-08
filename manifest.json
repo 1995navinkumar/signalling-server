@@ -3,17 +3,17 @@
   "name": "Peer Party",
   "description": "This extension captures the audio on the current tab and streams it to the peers connected in a party",
   "version": "1.0.0",
-  "app": {
-    "background": {
-      "scripts": [
-        "app/peer-party/launcher.js",
-        "app/peer-party/utils.js",
-        "app/peer-party/index.js",
-        "app/peer-party/create-party.js",
-        "app/peer-party/join-party.js"
-      ],
-      "persistent": true
-    }
+  "browser_action" : {
+    "default_popup" : "app/peer-party/index.html"
+  },
+  "background": {
+    "scripts": [
+      "app/peer-party/utils.js",
+      "app/peer-party/index.js",
+      "app/peer-party/create-party.js",
+      "app/peer-party/join-party.js"
+    ],
+    "persistent": true
   },
   "permissions": [
     "tabs",
