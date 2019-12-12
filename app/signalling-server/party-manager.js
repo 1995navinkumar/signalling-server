@@ -1,14 +1,21 @@
 function PartyManager() {
     var activeParties = {};
-    function handleClientRequest(connection,message) {
+    function handleClientRequest(connection, message) {
         var action = message.action;
-        var partyId = connection.partyId;
+        var partyId = connection.partyId || message.partyId;
         if (action == "create-party") {
-            createParty(connection);
+            var party = createParty(connection);
+            var message = {
+                action: "party-creation-success",
+                data: {
+                    partyId: party.partyId
+                }
+            }
+            connection.signal(message);
         } else if (action == "end-party") {
-            endParty(connection,partyId);
+            endParty(connection, partyId);
         } else {
-            getParty(partyId).handleClientRequest(connection,message);
+            getParty(partyId).handleClientRequest(connection, message);
         }
     }
     function getParty(partyId) {
@@ -18,6 +25,7 @@ function PartyManager() {
         var party = new Party(connection);
         activeParties[party.partyId] = party;
         console.log("party created");
+        return party;
     }
 
     function endParty(partyId) {
@@ -33,8 +41,8 @@ function Party(connection) {
     this.DJ = undefined;
     this.admin = connection;
     this.partyMembers = [connection];
-    this.partyId = Math.random();
-    connection.partyId = partyId;
+    this.partyId = "navin";
+    connection.partyId = this.partyId;
 }
 Party.prototype.handleClientRequest = function handleClientRequest(message) {
     console.log(message);
