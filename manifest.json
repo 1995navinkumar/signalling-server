@@ -8,10 +8,8 @@
   },
   "background": {
     "scripts": [
-      "app/peer-party/utils.js",
-      "app/peer-party/index.js",
-      "app/peer-party/create-party.js",
-      "app/peer-party/join-party.js"
+      "app/peer-party/socket-connection.js",
+      "app/peer-party/utils.js"
     ],
     "persistent": true
   },
