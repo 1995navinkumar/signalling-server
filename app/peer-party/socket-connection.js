@@ -15,3 +15,7 @@ var socket = (function Socket() {
 function messageParser(message) {
     return JSON.parse(message.data);
 }
+
+function actionInvoker(message) {
+    chrome.runtime.sendMessage(message);
+}

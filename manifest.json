@@ -9,8 +9,8 @@
   "background": {
     "scripts": [
       "app/peer-party/utils.js",
-      "app/peer-party/socket-connection.js",
-      "app/peer-party/dom-interact.js"
+      "app/peer-party/dom-interact.js",
+      "app/peer-party/socket-connection.js"
     ],
     "persistent": true
   },
