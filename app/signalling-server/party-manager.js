@@ -73,7 +73,7 @@ Party.prototype.handleClientRequest = function handleClientRequest(connection, m
             var clientIds = this.partyMembers.map(member => member.id);
             var message = {
                 action: "join-party",
-                clientIds
+                data: { clientIds }
             }
             if (clientIds.length > 0) {
                 connection.signal(message);

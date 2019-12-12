@@ -19,15 +19,21 @@ function messageParser(message) {
 
 var actions = {
     "dj-accept": function () {
-        chrome.tabs.query({ audible: true }, (tabs) => {
+        chrome.tabs.query({ active : true , currentWindow : true }, (tabs) => {
             chrome.tabCapture.capture({ audio: true }, (stream) => {
                 audioStream = stream;
             });
         });
+    },
+    "join-party" : function(message){
+        var clientIds = message.data.clientIds;
+        clientIds.forEach(client => {
+            
+        })
     }
 }
 
 function actionInvoker(message) {
-    actions[message.action] || actions[message.action](message);
+    actions[message.action] && actions[message.action](message);
     chrome.runtime.sendMessage(message);
 }
