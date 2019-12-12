@@ -15,8 +15,3 @@ var socket = (function Socket() {
 function messageParser(message) {
     return JSON.parse(message.data);
 }
-
-function actionInvoker(data) {
-    var action = data.action;
-    action ? actions[action](data) : log(data);
-}

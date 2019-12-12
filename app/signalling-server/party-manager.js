@@ -2,7 +2,7 @@ function PartyManager() {
     var activeParties = {};
     function handleClientRequest(connection, message) {
         var action = message.action;
-        var partyId = connection.partyId || message.partyId;
+        var partyId = connection.partyId || (message.data && message.data.partyId);
         if (action == "create-party") {
             var party = createParty(connection);
             var message = {
@@ -44,8 +44,14 @@ function Party(connection) {
     this.partyId = "navin";
     connection.partyId = this.partyId;
 }
-Party.prototype.handleClientRequest = function handleClientRequest(message) {
-    console.log(message);
+Party.prototype.handleClientRequest = function handleClientRequest(connection, message) {
+    var action = message.action;
+    if (action == "join-party") {
+        var message = {
+            action : "join-party-success"
+        }
+        connection.signal(message)
+    }
 }
 
 module.exports = PartyManager();

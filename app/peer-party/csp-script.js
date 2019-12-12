@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
             partyPage.style.removeProperty("display");
         } else if (action == "party-creation-failure") {
             showMessage(message.data);
+        } else if (action == "join-party-success") {
+            homePage.style.setProperty("display", "none");
+            partyPage.style.removeProperty("display");
         }
     });
 
