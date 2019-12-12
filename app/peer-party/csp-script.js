@@ -41,6 +41,9 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
         } else if (action == "join-party-success") {
             homePage.style.setProperty("display", "none");
             partyPage.style.removeProperty("display");
+        } else if(action == "dj-accept") {
+            console.log("dj accepted");
+            showMessage("dj accepted");
         }
     });
 

@@ -40,7 +40,7 @@ function PartyManager() {
 function Party(connection) {
     this.DJ = undefined;
     this.admin = connection;
-    this.partyMembers = [connection];
+    this.partyMembers = [];
     this.partyId = "navin";
     connection.partyId = this.partyId;
 }
@@ -48,9 +48,35 @@ Party.prototype.handleClientRequest = function handleClientRequest(connection, m
     var action = message.action;
     if (action == "join-party") {
         var message = {
-            action : "join-party-success"
+            action: "join-party-success"
         }
-        connection.signal(message)
+        // if authorised send signal else wait for admin permission
+        connection.signal(message);
+        this.partyMembers.push(connection);
+        connection.partyId = this.partyId;
+        if (this.DJ) {
+            var message = {
+                action: "join-party",
+                data: {
+                    clientId: connection.id
+                }
+            }
+            this.DJ.signal(message);
+        }
+    } else if (action == "become-dj") {
+        if (this.DJ) {
+            // handle dj change request
+        } else {
+            this.DJ = connection;
+            connection.signal({ action: "dj-accept" });
+
+            var clientIds = this.partyMembers.map(member => member.id);
+            var message = {
+                action: "join-party",
+                clientIds
+            }
+            this.DJ.signal(message);
+        }
     }
 }
 
