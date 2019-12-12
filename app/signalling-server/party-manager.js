@@ -32,7 +32,7 @@ function PartyManager() {
 function Party(connection) {
     this.DJ = undefined;
     this.admin = connection;
-    this.partyMembers = {};
+    this.partyMembers = [connection];
     this.partyId = Math.random();
     connection.partyId = partyId;
 }
