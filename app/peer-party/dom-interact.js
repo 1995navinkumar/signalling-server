@@ -1,9 +1,8 @@
 chrome.runtime.onMessage.addListener(function handler(message) {
     var type = message.type;
     if (type == "create-party") {
-        partyCreator(message.partyName, actions).then(audio => {
-            sendAudio = audio;
-            console.log(sendAudio);
+        signal({
+            action: "create-party"
         });
     } else if (type == "send-audio") {
         sendAudio();
@@ -11,3 +10,7 @@ chrome.runtime.onMessage.addListener(function handler(message) {
         partyJoiner(message.partyName, actions);
     }
 })
+
+function signal(message) {
+    socket.send(JSON.stringify(message));
+}

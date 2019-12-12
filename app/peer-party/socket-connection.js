@@ -5,9 +5,18 @@ var socket = (function Socket() {
     connection.onopen = function (e, f) {
         log("socket connection established ");
     }
-    // connection.onmessage = pipe(messageParser, actionInvoker);
+    connection.onmessage = pipe(messageParser, actionInvoker);
     connection.onerror = function (e) {
         log("error in connection establishment");
     }
     return connection;
 })();
+
+function messageParser(message) {
+    return JSON.parse(message.data);
+}
+
+function actionInvoker(data) {
+    var action = data.action;
+    action ? actions[action](data) : log(data);
+}
