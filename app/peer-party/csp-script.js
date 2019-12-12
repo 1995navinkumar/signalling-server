@@ -15,14 +15,14 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
     partyPage.style.setProperty("display", "none");
 
     createPartyButton.addEventListener("click", function () {
-        chrome.runtime.sendMessage({ type: "create-party" });
+        chrome.runtime.sendMessage({ action: "create-party" });
         joinPartyButton.disabled = true;
         createPartyButton.disabled = true;
     });
 
     joinPartyButton.addEventListener("click", function () {
         var partyId = partyNameInput.value;
-        chrome.runtime.sendMessage({ type: "join-party", partyId: partyId });
+        chrome.runtime.sendMessage({ action: "join-party", data: { partyId } });
         joinPartyButton.disabled = true;
         createPartyButton.disabled = true;
     });
