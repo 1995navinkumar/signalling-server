@@ -11,11 +11,19 @@
 </head>
 
 <body>
-    <audio id="audio-player" autoplay controls></audio>
-    <div class="controls">
-        <button id="createParty">Create Party</button>
-        <button id="joinParty">Join Party</button>
-        <button id="sendAudio">Send Audio</button>
+    <h2>Peer Party !!</h2>
+    <div class="home-page">
+        <input id="input__party-name" type="text" placeholder="enter party name to join">
+        <button id="join-party">Join Party</button>
+        <button id="create-party">Create Party</button>
+    </div>
+
+    <div class="party-page">
+        <div id="party-name"></div>
+        <audio id="audio-player" autoplay controls></audio>
+        <div class="controls">
+            <button id="become-dj">Become DJ</button>
+        </div>
     </div>
 </body>
 
