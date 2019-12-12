@@ -6,12 +6,12 @@ function ConnectionManager() {
     function createConnection(ws, sessionId) {
         var connection = new Connection(ws, sessionId);
         activeConnection[sessionId] = connection;
-        log("connection established");
+        log("connection established : " + sessionId);
         return connection;
     }
     function terminateConnection(connection) {
         delete activeConnection[connection.id];
-        log("connection terminated");
+        log("connection terminated : " + connection.id);
     }
     return {
         createConnection,
