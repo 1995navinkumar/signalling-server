@@ -1,12 +1,11 @@
-
-var socket = (function Socket({ username }) {
+var log = console.log;
+var socket = (function Socket() {
     var hostName = location.hostname;
-    document.cookie = "sessionId=navin";
-    var connection = new WebSocket(`ws://navin-5490:8080`, username);
+    var connection = new WebSocket(`ws://navin-5490:8080`);
     connection.onopen = function (e, f) {
         log("socket connection established ");
     }
-    connection.onmessage = pipe(messageParser, actionInvoker);
+    // connection.onmessage = pipe(messageParser, actionInvoker);
     connection.onerror = function (e) {
         log("error in connection establishment");
     }
