@@ -7,7 +7,9 @@ chrome.runtime.onMessage.addListener(function handler(message) {
     } else if (type == "send-audio") {
         sendAudio();
     } else if (type == "join-party") {
-        partyJoiner(message.partyName, actions);
+        signal({
+            action: "join-party"
+        });
     }
 })
 
