@@ -28,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
     });
 
     chrome.runtime.onMessage.addListener(function handler(message) {
-        message = JSON.parse(message);
         var action = message.action;
         if (action == "party-creation-success") {
             homePage.style.setProperty("display", "none");

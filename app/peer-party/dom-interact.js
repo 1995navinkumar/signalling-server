@@ -1,16 +1,5 @@
 chrome.runtime.onMessage.addListener(function handler(message) {
-    var type = message.type;
-    if (type == "create-party") {
-        signal({
-            action: "create-party"
-        });
-    } else if (type == "send-audio") {
-        sendAudio();
-    } else if (type == "join-party") {
-        signal({
-            action: "join-party"
-        });
-    }
+    signal(message);
 })
 
 function signal(message) {

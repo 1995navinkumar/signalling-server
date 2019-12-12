@@ -17,7 +17,7 @@ function Socket(server, wss) {
 
     wss.on('connection', function onConnection(ws, sessionId) {
         var connection = ConnectionManager.createConnection(ws, sessionId);
-        ws.on("message", connection.handleClientRequest);
+        ws.on("message", connection.handleClientRequest.bind(connection));
         ws.on("close", function () {
             ConnectionManager.terminateConnection(connection);
         });
