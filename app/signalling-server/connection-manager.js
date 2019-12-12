@@ -26,5 +26,8 @@ function Connection(ws, sessionId) {
 Connection.prototype.handleClientRequest = function handleClientRequest(message) {
     PartyManager.handleClientRequest(this,JSON.parse(message));
 }
+Connection.prototype.signal = function signal(message){
+    this.ws.send(JSON.stringify(message))
+}
 
 module.exports = ConnectionManager();;
