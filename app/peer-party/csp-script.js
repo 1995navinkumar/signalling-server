@@ -27,6 +27,10 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
         createPartyButton.disabled = true;
     });
 
+    becomeDJButton.addEventListener('click', function () {
+        chrome.runtime.sendMessage({ action: "become-dj" });
+    });
+
     chrome.runtime.onMessage.addListener(function handler(message) {
         var action = message.action;
         if (action == "party-creation-success") {
