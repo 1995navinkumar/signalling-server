@@ -44,6 +44,8 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
         } else if(action == "dj-accept") {
             console.log("dj accepted");
             showMessage("dj accepted");
+        } else if(action == "join-party") {
+            console.log(message);
         }
     });
 
