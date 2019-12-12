@@ -75,7 +75,9 @@ Party.prototype.handleClientRequest = function handleClientRequest(connection, m
                 action: "join-party",
                 clientIds
             }
-            this.DJ.signal(message);
+            if (clientIds.length > 0) {
+                connection.signal(message);
+            }
         }
     }
 }
