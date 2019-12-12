@@ -20,9 +20,8 @@ function ConnectionManager() {
 }
 
 function Connection(ws, sessionId) {
-    this.connection = {};
-    this.connection.ws = ws;
-    this.connection.id = sessionId;
+    this.ws = ws;
+    this.id = sessionId;
 }
 Connection.prototype.handleClientRequest = function handleClientRequest(message) {
     PartyManager.handleClientRequest(this,JSON.parse(message));

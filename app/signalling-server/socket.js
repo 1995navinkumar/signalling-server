@@ -21,10 +21,6 @@ function Socket(server, wss) {
         ws.on("close", function () {
             ConnectionManager.terminateConnection(connection);
         });
-        ws.send(JSON.stringify({
-            action: "connection",
-            uuid : sessionId
-        }));
     });
 }
 
