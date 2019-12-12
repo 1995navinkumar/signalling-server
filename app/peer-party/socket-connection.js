@@ -1,4 +1,5 @@
 var log = console.log;
+var audioStream;
 var socket = (function Socket() {
     var hostName = location.hostname;
     var connection = new WebSocket(`ws://navin-5490:8080`);
@@ -14,6 +15,16 @@ var socket = (function Socket() {
 
 function messageParser(message) {
     return JSON.parse(message.data);
+}
+
+var actions = {
+    "dj-accept": function () {
+        chrome.tabs.query({ audible: true }, (tabs) => {
+            chrome.tabCapture.capture({ audio: true }, (stream) => {
+                audioStream = stream;
+            });
+        });
+    }
 }
 
 function actionInvoker(message) {
