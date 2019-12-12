@@ -28,6 +28,6 @@ var actions = {
 }
 
 function actionInvoker(message) {
-    actions[message.action](message);
+    actions[message.action] || actions[message.action](message);
     chrome.runtime.sendMessage(message);
 }
