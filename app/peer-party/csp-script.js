@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
 
     var partyNameInput = document.getElementById("input__party-name");
 
+    var messageContainer = document.getElementById("message-container");
+
     partyPage.style.setProperty("display", "none");
 
     createPartyButton.addEventListener("click", function () {
@@ -24,5 +26,23 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
         joinPartyButton.disabled = true;
         createPartyButton.disabled = true;
     });
+
+    chrome.runtime.onMessage.addListener(function handler(message) {
+        message = JSON.parse(message);
+        var action = message.action;
+        if (action == "party-creation-success") {
+            homePage.style.setProperty("display", "none");
+            partyPage.style.removeProperty("display");
+        } else if (action == "party-creation-failure") {
+            showMessage(message.data);
+        }
+    });
+
+    function showMessage(msg) {
+        messageContainer.innerText = msg;
+        setTimeout(function () {
+            messageContainer.innerText = ""
+        }, 2000);
+    }
 
 });
