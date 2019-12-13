@@ -29,62 +29,64 @@ function messageParser(message) {
     return JSON.parse(message.data);
 }
 
-var rtcPeers = {}, djPeer;
+var peer, partyMembers = {};
 
 var actions = {
     "dj-accept": function () {
-        chrome.tabs.query({ active : true , currentWindow : true }, (tabs) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             chrome.tabCapture.capture({ audio: true }, (stream) => {
                 audioStream = stream;
             });
         });
     },
-    "join-party" : function(message){
-        djPeer = djPeer || new RTC_Connnector(iceServers,stream);
+    "join-party": function (message) {
         var clientIds = message.data.clientIds;
         clientIds.forEach(clientId => {
-            
-            rtcPeers[clientId] = rtcTransmitter;
-
-            djPeer.addEventListener('offer', function (offer) {
+            var clientPeer = new RTC_Connnector(iceServers, stream);
+            partyMembers[clientId] = clientPeer;
+            clientPeer.addEventListener('offerReady', function (offer) {
                 signal({
-                    action:"offer",
-                    data: {offer, clientId}
+                    action: "offer",
+                    data: { offer, clientId }
                 });
             });
+            clientPeer.addEventListener('candidateReady', function (candidate) {
+                signal({
+                    action: "candidate",
+                    data: { candidate, clientId }
+                });
+            })
         });
     },
-     
-    "offer": function offer(message) {
-        let rtcTransmitter = rtcPeers[message.data.clientId]
-        if(!rtcTransmitter) {
-            rtcTransmitter = new RTC_Connnector(iceServers);
-            rtcPeers[message.data.clientId] = rtcTransmitter;
-        }
-        
-        rtcTransmitter.addEventListener('answer', function (answer) {
-            signal({
-                action:"answer",
-                data: {answer, clientId}
-            });
-        });
 
-        rtcTransmitter.addEventListener('candidate', function (candidate) {
+    "offer": function offer(message) {
+        peer = new RTC_Connnector(iceServers);
+        var clientId = message.data.clientId;
+        peer.addEventListener('answerReady', function (answer) {
             signal({
-                action:"candidate",
-                data: {candidate, clientId}
+                action: "answer",
+                data: { answer, clientId }
             });
         });
-        rtcTransmitter.acceptOffer(message.offer);
+        peer.addEventListener('candidateReady', function (candidate) {
+            signal({
+                action: "candidate",
+                data: { candidate, clientId }
+            });
+        });
+        peer.acceptOffer(message.offer);
     },
 
     "answer": function answer(message) {
-        djPeer.setAnswer(message.data.answer);
+        var clientId = message.data.clientId;
+        var clientPeer = partyMembers[clientId];
+        clientPeer.setAnswer(message.data.answer);
     },
 
     "candidate": function candidate(message) {
-        let rtcTransmitter = rtcPeers[message.data.clientId];
-        rtcTransmitter.setRemoteCandidate(message.candidate);
+        let clientId = message.data.clientId;
+        let clientPeer = partyMembers[clientId];
+        clientPeer.setRemoteCandidate(message.data.candidate);
     }
 }
 

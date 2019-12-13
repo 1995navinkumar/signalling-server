@@ -21,7 +21,7 @@ class RTC_Connnector extends EventTarget {
         });
 
         this.signallingEvents = {
-            offer: new Event("offer"),
+            offer: new Event("offerReady"),
             answer: new Event("answer"),
             candidate: new Event("candidate")
         }
