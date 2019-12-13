@@ -16,6 +16,7 @@ class RTC_Connnector extends EventTarget {
         /**
          * @property {RTCPeerConnection} rtcPeer rtc peer instance which is used to initiate a communication with other peers 
          */
+        super();
         this.rtcPeer = new RTCPeerConnection({
             iceServers
         });

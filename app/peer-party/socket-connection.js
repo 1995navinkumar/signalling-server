@@ -42,7 +42,7 @@ var actions = {
     "join-party": function (message) {
         var clientIds = message.data.clientIds;
         clientIds.forEach(clientId => {
-            var clientPeer = new RTC_Connnector(iceServers, stream);
+            var clientPeer = new RTC_Connnector(iceServers, audioStream);
             partyMembers[clientId] = clientPeer;
             clientPeer.addEventListener('offerReady', function (offer) {
                 signal({
