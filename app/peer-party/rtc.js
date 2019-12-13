@@ -12,7 +12,7 @@ class RTC_Connnector extends EventTarget {
      * @param {function} peerEvents.ontrack
      * @param {function} peerEvents.onnegotiationneeded  
      */
-    constructor(iceServers, streams = {}, peerEvents = {}) {
+    constructor(iceServers, streams, peerEvents = {}) {
         /**
          * @property {RTCPeerConnection} rtcPeer rtc peer instance which is used to initiate a communication with other peers 
          */
@@ -23,15 +23,15 @@ class RTC_Connnector extends EventTarget {
 
         this.signallingEvents = {
             offer: new Event("offerReady"),
-            answer: new Event("answer"),
-            candidate: new Event("candidate")
+            answer: new Event("answerReady"),
+            candidate: new Event("candidateReady")
         }
-        
+
         this.rtcPeer.onnegotiationneeded = this._initiateConnection;
         this.rtcPeer.ontrack = this._ontrack;
         this.rtcPeer.onicecandidate = this._onicecandidate;
 
-        if(streams) {
+        if (streams) {
             for (const track of streams.getTracks()) {
                 this.rtcPeer.addTrack(track, streams);
             }
@@ -97,7 +97,7 @@ class RTC_Connnector extends EventTarget {
             let answer = await slavePeer.createAnswer(constraints);
             this.rtcPeer.setLocalDescription(answer);
 
-            this.dispatchEvent(this.signallingEvents.answer,this.rtcPeer.localDescription);
+            this.dispatchEvent(this.signallingEvents.answer, this.rtcPeer.localDescription);
             // signal({
             //     action: "answer",
             //     answer: slavePeer.localDescription
