@@ -53,7 +53,7 @@ var actions = {
             console.log(audioStream);
             var streamObj = audioStream || await getAudioStream();
             console.log(streamObj);
-            
+
             var clientPeer = new RTC_Connnector(iceServers, streamObj);
             console.log(clientPeer);
 
@@ -88,9 +88,9 @@ var actions = {
                 data: { candidate, clientId }
             });
         });
-        peer.on("streamReady",function(stream){
+        peer.on("streamReady", function ({ streams: [stream] }) {
             console.log("streamReady");
-            
+
             var audioObj = new Audio();
             audioObj.srcObject = stream;
             audioObj.play();

@@ -46,8 +46,7 @@ class RTC_Connnector extends EventTarget {
 
     _ontrack(event) {
         log("track added in rtc");
-        var stream = event.stream;
-        this.trigger("streamReady",stream);
+        this.trigger("streamReady",event);
     }
 
     async _initiateConnection() {
