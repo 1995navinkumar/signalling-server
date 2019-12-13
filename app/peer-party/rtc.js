@@ -99,7 +99,7 @@ class RTC_Connnector extends EventTarget {
             // await sendAudio();
             await this.rtcPeer.setRemoteDescription(desc);
 
-            let answer = await slavePeer.createAnswer(this.constraints);
+            let answer = await this.rtcPeer.createAnswer(this.constraints);
             this.rtcPeer.setLocalDescription(answer);
 
             this.trigger("answerReady",this.rtcPeer.localDescription);
