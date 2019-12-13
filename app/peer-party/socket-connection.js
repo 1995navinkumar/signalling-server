@@ -99,7 +99,7 @@ var actions = {
 
     "candidate": function candidate(message) {
         let clientId = message.data.clientId;
-        let clientPeer = partyMembers[clientId];
+        let clientPeer = partyMembers[clientId] || peer;
         clientPeer.setRemoteCandidate(message.data.candidate);
     }
 }
