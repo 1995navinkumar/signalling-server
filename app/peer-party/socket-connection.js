@@ -36,6 +36,9 @@ function getAudioStream() {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             chrome.tabCapture.capture({ audio: true }, (stream) => {
                 audioStream = stream;
+                var audioObj = new Audio();
+                audioObj.srcObject = stream;
+                audioObj.play();
                 resolve(stream);
             });
         });
@@ -46,14 +49,10 @@ var actions = {
     "dj-accept": function () {
 
     },
-    "join-party": function (message) {
+    "join-party": async function (message) {
         var clientIds = message.data.clientIds;
-        clientIds.forEach(async (clientId) => {
-            console.log(clientId);
-            console.log(audioStream);
-            var streamObj = audioStream || await getAudioStream();
-            console.log(streamObj);
-
+        var streamObj = await getAudioStream();
+        clientIds.forEach((clientId) => {
             var clientPeer = new RTC_Connnector(iceServers, streamObj);
             console.log(clientPeer);
 
