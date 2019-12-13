@@ -88,7 +88,7 @@ var actions = {
                 data: { candidate, clientId }
             });
         });
-        peer.acceptOffer(message.offer);
+        peer.acceptOffer(message.data.offer);
     },
 
     "answer": function answer(message) {
