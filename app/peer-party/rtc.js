@@ -22,10 +22,13 @@ class RTC_Connnector extends EventTarget {
         });
 
         this.signallingEvents = {
-            offer: new Event("offerReady"),
+            offer : new Event("offerReady"),
             answer: new Event("answerReady"),
             candidate: new Event("candidateReady")
         }
+
+        console.log(this.rtcPeer);
+        
 
         this.rtcPeer.onnegotiationneeded = this._initiateConnection;
         this.rtcPeer.ontrack = this._ontrack;

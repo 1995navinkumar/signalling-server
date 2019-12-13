@@ -31,18 +31,29 @@ function messageParser(message) {
 
 var peer, partyMembers = {};
 
-var actions = {
-    "dj-accept": function () {
+function getAudioStream() {
+    return new Promise(function (resolve, reject) {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             chrome.tabCapture.capture({ audio: true }, (stream) => {
                 audioStream = stream;
+                resolve(stream);
             });
         });
+    })
+}
+
+var actions = {
+    "dj-accept": function () {
+
     },
-    "join-party": function (message) {
+    "join-party": async function (message) {
         var clientIds = message.data.clientIds;
         clientIds.forEach(clientId => {
-            var clientPeer = new RTC_Connnector(iceServers, audioStream);
+            console.log(clientId);
+            console.log(audioStream);
+            var clientPeer = new RTC_Connnector(iceServers, audioStream ||  await getAudioStream());
+            console.log(clientPeer);
+
             partyMembers[clientId] = clientPeer;
             clientPeer.addEventListener('offerReady', function (offer) {
                 signal({
