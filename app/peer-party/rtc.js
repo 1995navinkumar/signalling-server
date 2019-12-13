@@ -1,7 +1,3 @@
-import {
-    pipe
-} from "../peer-party/utils";
-
 /**
  * Used for abstraction of webrtc implementations
  * @module RTC_Connnector
@@ -16,7 +12,7 @@ class RTC_Connnector extends EventTarget {
      * @param {function} peerEvents.ontrack
      * @param {function} peerEvents.onnegotiationneeded  
      */
-    constructor(iceServers, peerEvents) {
+    constructor(iceServers, peerEvents = {}) {
         /**
          * @property {RTCPeerConnection} rtcPeer rtc peer instance which is used to initiate a communication with other peers 
          */
@@ -24,12 +20,25 @@ class RTC_Connnector extends EventTarget {
             iceServers
         });
 
+        this.signallingEvents = {
+            offer: new Event("offer"),
+            answer: new Event("answer"),
+            candidate: new Event("candidate")
+        }
+
         let events = {
             onicecandidate: pipe(this._onicecandidate, peerEvents.onicecandidate),
             ontrack: pipe(this._ontrack, peerEvents.ontrack),
-            onnegotiationneeded: pipe(this._onnegotiationneeded, peerEvents.onnegotiationneeded)
+            onnegotiationneeded: pipe(this._initiateConnection, peerEvents.onnegotiationneeded)
         }
         Object.assign(this.rtcPeer, ...events);
+    }
+
+    _ontrack(event) {
+        log("track added in rtc");
+        if (event.candidate) {
+            this.dispatchEvent(this.signallingEvents.candidate, event);
+        }
     }
 
     async _initiateConnection() {
@@ -48,6 +57,7 @@ class RTC_Connnector extends EventTarget {
             log("Setting to local description");
             await this.rtcPeer.setLocalDescription(offer);
 
+            this.dispatchEvent(this.signallingEvents.offer);
             // signal({
             //     action: "offer",
             //     offer: peerList[username].localDescription
@@ -83,6 +93,7 @@ class RTC_Connnector extends EventTarget {
             let answer = await slavePeer.createAnswer(constraints);
             this.rtcPeer.setLocalDescription(answer);
 
+            this.dispatchEvent(this.signallingEvents.answer,this.rtcPeer.localDescription);
             // signal({
             //     action: "answer",
             //     answer: slavePeer.localDescription
@@ -95,5 +106,20 @@ class RTC_Connnector extends EventTarget {
         this.rtcPeer.setRemoteDescription(desc).then(_ => {
             log("Master Remote Description is set");
         });
+    }
+
+    setRemoteCandidate(candidate) {
+        if (this.rtcPeer.remoteDescription) {
+            var candidate = new RTCIceCandidate(candidate);
+            log("Adding received ICE candidate");
+            this.rtcPeer.addIceCandidate(candidate)
+        }
+    }
+
+    _onicecandidate(event) {
+        log("ice candidate handling");
+        if (event.candidate) {
+            this.dispatchEvent(this.signallingEvents.candidate, event);
+        }
     }
 }

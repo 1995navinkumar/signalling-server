@@ -13,9 +13,23 @@ var socket = (function Socket() {
     return connection;
 })();
 
+const servers = {
+    urls: "stun:stun1.l.google.com:19302"
+}
+
+const turnServer = {
+    urls: 'turn:192.158.29.39:3478?transport=udp',
+    credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+    username: '28224511:1379330808'
+}
+
+const iceServers = [servers, turnServer];
+
 function messageParser(message) {
     return JSON.parse(message.data);
 }
+
+var rtcPeers = {};
 
 var actions = {
     "dj-accept": function () {
@@ -28,7 +42,7 @@ var actions = {
     "join-party" : function(message){
         var clientIds = message.data.clientIds;
         clientIds.forEach(client => {
-            
+            rtcPeers[client] = new RTC_Connnector()
         })
     }
 }
