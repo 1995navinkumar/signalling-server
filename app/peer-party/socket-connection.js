@@ -46,12 +46,15 @@ var actions = {
     "dj-accept": function () {
 
     },
-    "join-party": async function (message) {
+    "join-party": function (message) {
         var clientIds = message.data.clientIds;
-        clientIds.forEach(clientId => {
+        clientIds.forEach(async (clientId) => {
             console.log(clientId);
             console.log(audioStream);
-            var clientPeer = new RTC_Connnector(iceServers, audioStream ||  await getAudioStream());
+            var streamObj = audioStream || await getAudioStream();
+            console.log(streamObj);
+            
+            var clientPeer = new RTC_Connnector(iceServers, streamObj);
             console.log(clientPeer);
 
             partyMembers[clientId] = clientPeer;
