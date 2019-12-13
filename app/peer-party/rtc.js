@@ -17,6 +17,9 @@ class RTC_Connnector extends EventTarget {
          * @property {RTCPeerConnection} rtcPeer rtc peer instance which is used to initiate a communication with other peers 
          */
         super();
+        this.constraints = {
+            audio: true
+        };
         this.rtcPeer = new RTCPeerConnection({
             iceServers
         });
@@ -51,7 +54,7 @@ class RTC_Connnector extends EventTarget {
     async _initiateConnection() {
         try {
             log("Negotiation started");
-            const offer = await this.rtcPeer.createOffer(constraints);
+            const offer = await this.rtcPeer.createOffer(this.constraints);
 
             // If the connection hasn't yet achieved the "stable" state,
             // return to the caller. Another negotiationneeded event
@@ -97,7 +100,7 @@ class RTC_Connnector extends EventTarget {
             // await sendAudio();
             await this.rtcPeer.setRemoteDescription(desc);
 
-            let answer = await slavePeer.createAnswer(constraints);
+            let answer = await slavePeer.createAnswer(this.constraints);
             this.rtcPeer.setLocalDescription(answer);
 
             this.dispatchEvent(this.signallingEvents.answer, this.rtcPeer.localDescription);
