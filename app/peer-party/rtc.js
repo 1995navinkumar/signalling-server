@@ -67,7 +67,7 @@ class RTC_Connnector extends EventTarget {
             log("Setting to local description");
             await this.rtcPeer.setLocalDescription(offer);
 
-            this.dispatchEvent(this.signallingEvents.offer);
+            this.dispatchEvent(this.signallingEvents.offer,this.rtcPeer.localDescription);
             // signal({
             //     action: "offer",
             //     offer: peerList[username].localDescription
@@ -129,7 +129,7 @@ class RTC_Connnector extends EventTarget {
     _onicecandidate(event) {
         log("ice candidate handling");
         if (event.candidate) {
-            this.dispatchEvent(this.signallingEvents.candidate, event);
+            this.dispatchEvent(this.signallingEvents.candidate, event.candidate);
         }
     }
 }
