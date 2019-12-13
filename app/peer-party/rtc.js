@@ -12,7 +12,7 @@ class RTC_Connnector extends EventTarget {
      * @param {function} peerEvents.ontrack
      * @param {function} peerEvents.onnegotiationneeded  
      */
-    constructor(iceServers, peerEvents = {}) {
+    constructor(iceServers, streams = {}, peerEvents = {}) {
         /**
          * @property {RTCPeerConnection} rtcPeer rtc peer instance which is used to initiate a communication with other peers 
          */
@@ -32,6 +32,12 @@ class RTC_Connnector extends EventTarget {
             onnegotiationneeded: pipe(this._initiateConnection, peerEvents.onnegotiationneeded)
         }
         Object.assign(this.rtcPeer, ...events);
+
+        if(streams) {
+            for (const track of streams.getTracks()) {
+                this.rtcPeer.addTrack(track, streams);
+            }
+        }
     }
 
     _ontrack(event) {

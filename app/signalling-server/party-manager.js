@@ -44,8 +44,12 @@ function Party(connection) {
     this.partyId = "navin";
     connection.partyId = this.partyId;
 }
+Party.prototype.getClient = function getClient(clientId) {
+    return this.partyMembers.filter(client => client.id == clientId)[0];
+}
 Party.prototype.handleClientRequest = function handleClientRequest(connection, message) {
     var action = message.action;
+    var data = message.data;
     if (action == "join-party") {
         var message = {
             action: "join-party-success"
@@ -58,7 +62,7 @@ Party.prototype.handleClientRequest = function handleClientRequest(connection, m
             var message = {
                 action: "join-party",
                 data: {
-                    clientId: connection.id
+                    clientIds: [connection.id]
                 }
             }
             this.DJ.signal(message);
@@ -79,6 +83,41 @@ Party.prototype.handleClientRequest = function handleClientRequest(connection, m
                 connection.signal(message);
             }
         }
+    } else if (action == "offer") {
+        var offer = data.offer;
+        var clientId = data.clientId;
+        var client = this.getClient(clientId);
+        var message = {
+            action: "offer",
+            data: {
+                offer,
+                clientId
+            }
+        }
+        client.signal(message);
+    } else if (action == "candidate") {
+        var candidate = data.candidate;
+        var clientId = data.clientId;
+        var message = {
+            action: "candidate",
+            data: {
+                candidate,
+                clientId
+            }
+        }
+        var client = this.getClient(clientId);
+        client.signal(message);
+    } else if (action == "answer") {
+        var answer = data.answer;
+        var clientId = data.clientId;
+        var message = {
+            action: "answer",
+            data: {
+                answer,
+                clientId
+            }
+        }
+        this.DJ.signal(message);
     }
 }
 
