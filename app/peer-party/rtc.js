@@ -26,13 +26,10 @@ class RTC_Connnector extends EventTarget {
             answer: new Event("answer"),
             candidate: new Event("candidate")
         }
-
-        let events = {
-            onicecandidate: pipe(this._onicecandidate, peerEvents.onicecandidate),
-            ontrack: pipe(this._ontrack, peerEvents.ontrack),
-            onnegotiationneeded: pipe(this._initiateConnection, peerEvents.onnegotiationneeded)
-        }
-        Object.assign(this.rtcPeer, ...events);
+        
+        this.rtcPeer.onnegotiationneeded = this._initiateConnection;
+        this.rtcPeer.ontrack = this._ontrack;
+        this.rtcPeer.onicecandidate = this._onicecandidate;
 
         if(streams) {
             for (const track of streams.getTracks()) {
