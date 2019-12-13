@@ -24,9 +24,11 @@ class RTC_Connnector extends EventTarget {
             iceServers
         });
 
-        this.signallingEvents = (eventName, data) => {
-            return new CustomEvent(eventName, {detail: data})
-        }
+        var eventHandler = composeEventHandler();
+        this.on = eventHandler.on;
+        this.off = eventHandler.off;
+        this.trigger = eventHandler.trigger;
+        this.events = eventHandler.events;
 
         console.log(this.rtcPeer);
         
@@ -44,9 +46,8 @@ class RTC_Connnector extends EventTarget {
 
     _ontrack(event) {
         log("track added in rtc");
-        // if (event.candidate) {
-        //     this.dispatchEvent(this.signallingEvents.candidate, event);
-        // }
+        var stream = event.stream;
+        this.trigger("streamReady",stream);
     }
 
     async _initiateConnection() {
@@ -65,7 +66,7 @@ class RTC_Connnector extends EventTarget {
             log("Setting to local description");
             await this.rtcPeer.setLocalDescription(offer);
 
-            this.dispatchEvent(this.signallingEvents("offerReady",this.rtcPeer.localDescription));
+            this.trigger("offerReady",this.rtcPeer.localDescription);
             // signal({
             //     action: "offer",
             //     offer: peerList[username].localDescription
@@ -101,7 +102,7 @@ class RTC_Connnector extends EventTarget {
             let answer = await slavePeer.createAnswer(this.constraints);
             this.rtcPeer.setLocalDescription(answer);
 
-            this.dispatchEvent(this.signallingEvents("answerReady", this.rtcPeer.localDescription));
+            this.trigger("answerReady",this.rtcPeer.localDescription);
             // signal({
             //     action: "answer",
             //     answer: slavePeer.localDescription
@@ -127,7 +128,7 @@ class RTC_Connnector extends EventTarget {
     _onicecandidate(event) {
         log("ice candidate handling");
         if (event.candidate) {
-            this.dispatchEvent(this.signallingEvents("candidateReady", event.candidate));
+            this.trigger("candidateReady",event.candidate);
         }
     }
 }

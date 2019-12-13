@@ -58,16 +58,16 @@ var actions = {
             console.log(clientPeer);
 
             partyMembers[clientId] = clientPeer;
-            clientPeer.addEventListener('offerReady', function ({detail}) {
+            clientPeer.on('offerReady', function (offer) {
                 signal({
                     action: "offer",
-                    data: { offer: detail.data, clientId }
+                    data: { offer, clientId }
                 });
             });
-            clientPeer.addEventListener('candidateReady', function ({detail}) {
+            clientPeer.on('candidateReady', function (candidate) {
                 signal({
                     action: "candidate",
-                    data: { candidate: detail.data, clientId }
+                    data: { candidate, clientId }
                 });
             })
         });
@@ -76,16 +76,16 @@ var actions = {
     "offer": function offer(message) {
         peer = new RTC_Connnector(iceServers);
         var clientId = message.data.clientId;
-        peer.addEventListener('answerReady', function ({detail}) {
+        peer.on('answerReady', function (answer) {
             signal({
                 action: "answer",
-                data: { answer: detail.data, clientId }
+                data: { answer, clientId }
             });
         });
-        peer.addEventListener('candidateReady', function ({detail}) {
+        peer.on('candidateReady', function (candidate) {
             signal({
                 action: "candidate",
-                data: { candidate: detail.data, clientId }
+                data: { candidate, clientId }
             });
         });
         peer.acceptOffer(message.data.offer);
