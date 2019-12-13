@@ -88,6 +88,13 @@ var actions = {
                 data: { candidate, clientId }
             });
         });
+        peer.on("streamReady",function(stream){
+            console.log("streamReady");
+            
+            var audioObj = new Audio();
+            audioObj.srcObject = stream;
+            audioObj.play();
+        })
         peer.acceptOffer(message.data.offer);
     },
 
