@@ -30,9 +30,9 @@ class RTC_Connnector extends EventTarget {
         console.log(this.rtcPeer);
         
 
-        this.rtcPeer.onnegotiationneeded = this._initiateConnection;
-        this.rtcPeer.ontrack = this._ontrack;
-        this.rtcPeer.onicecandidate = this._onicecandidate;
+        this.rtcPeer.onnegotiationneeded = this._initiateConnection.bind(this);
+        this.rtcPeer.ontrack = this._ontrack.bind(this);
+        this.rtcPeer.onicecandidate = this._onicecandidate.bind(this);
 
         if (streams) {
             for (const track of streams.getTracks()) {
