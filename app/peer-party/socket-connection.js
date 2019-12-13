@@ -51,7 +51,7 @@ var actions = {
     },
     "join-party": async function (message) {
         var clientIds = message.data.clientIds;
-        var streamObj = await getAudioStream();
+        var streamObj = audioStream ||  await getAudioStream();
         clientIds.forEach((clientId) => {
             var clientPeer = new RTC_Connnector(iceServers, streamObj);
             console.log(clientPeer);
