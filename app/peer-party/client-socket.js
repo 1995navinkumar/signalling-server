@@ -9,6 +9,12 @@ function signal(message) {
     })
 }
 
+function destroySocket() {
+    SocketManager.then(socketManager => {
+        socketManager.destroy();
+    })
+}
+
 var SocketManager = (async function Socket() {
     var socket, profile;
     profile = await getUserProfile();
@@ -20,6 +26,14 @@ var SocketManager = (async function Socket() {
     async function getSocket() {
         return socket || await makeConnection();
     }
+
+    function destroy() {
+        if (socket) {
+            socket.close(1000, "User logged out");
+            socket = undefined;
+        }
+    }
+
     async function makeConnection() {
         return new Promise((resolve, reject) => {
             socket = new WebSocket(`ws://localhost:8080?mailId=${profile.email}`);
@@ -32,10 +46,13 @@ var SocketManager = (async function Socket() {
                 log("error in connection establishment");
                 reject(e);
             }
+            socket.onclose = function(){
+                console.log("socket closed");
+            }
 
         })
     }
-    return { getSocket };
+    return { getSocket, destroy };
 })();
 
 const servers = {

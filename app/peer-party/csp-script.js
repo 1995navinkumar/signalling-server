@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", function addListeners() {
+    updatePageAttr(getPage());
+    updateStateAttr(getState());
+
     var createPartyButton = document.getElementById("create-party");
     var joinPartyButton = document.getElementById("join-party");
 
@@ -10,41 +13,48 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
 
     var partyNameInput = document.getElementById("input__party-name");
 
-    var messageContainer = document.getElementById("message-container");
+    var logoutIcon = document.getElementById("logout-icon");
 
-    partyPage.style.setProperty("display", "none");
+    var messageContainer = document.getElementById("message-container");
 
     createPartyButton.addEventListener("click", function () {
         chrome.runtime.sendMessage({ action: "create-party" });
-        joinPartyButton.disabled = true;
-        createPartyButton.disabled = true;
     });
 
     joinPartyButton.addEventListener("click", function () {
         var partyId = partyNameInput.value;
         chrome.runtime.sendMessage({ action: "join-party", data: { partyId } });
-        joinPartyButton.disabled = true;
-        createPartyButton.disabled = true;
     });
 
     becomeDJButton.addEventListener('click', function () {
         chrome.runtime.sendMessage({ action: "become-dj" });
     });
 
+    logoutIcon.addEventListener("click", function () {
+        chrome.runtime.sendMessage({action : "logout"});
+        localStorage.clear();
+        updatePageAttr(getPage());
+        updateStateAttr(getState());
+    });
+
     chrome.runtime.onMessage.addListener(function handler(message) {
         var action = message.action;
         if (action == "party-creation-success") {
-            homePage.style.setProperty("display", "none");
-            partyPage.style.removeProperty("display");
+            setPage("party");
+            setState("connected");
+            updatePageAttr(getPage());
+            updateStateAttr(getState());
         } else if (action == "party-creation-failure") {
             showMessage(message.data);
         } else if (action == "join-party-success") {
-            homePage.style.setProperty("display", "none");
-            partyPage.style.removeProperty("display");
-        } else if(action == "dj-accept") {
+            setPage("party");
+            setState("connected");
+            updatePageAttr(getPage());
+            updateStateAttr(getState());
+        } else if (action == "dj-accept") {
             console.log("dj accepted");
             showMessage("dj accepted");
-        } else if(action == "join-party") {
+        } else if (action == "join-party") {
             console.log(message);
         }
     });
@@ -57,3 +67,27 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
     }
 
 });
+
+function updateStateAttr(state) {
+    document.body.setAttribute("state", state);
+}
+
+function updatePageAttr(page) {
+    document.body.setAttribute("page", page);
+}
+
+function getState() {
+    return localStorage.getItem("state") || "idle";
+}
+
+function getPage() {
+    return localStorage.getItem("page") || "home";
+}
+
+function setState(state) {
+    localStorage.setItem("state", state);
+}
+
+function setPage(page) {
+    localStorage.setItem("page", page);
+}

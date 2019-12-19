@@ -8,6 +8,7 @@
   },
   "background": {
     "scripts": [
+      "app/peer-party/state.js",
       "app/peer-party/utils.js",
       "app/peer-party/dom-interact.js",
       "app/peer-party/rtc.js",

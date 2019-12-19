@@ -3,7 +3,7 @@
 }
 
 .controls {
-    margin : 12px;
+    margin: 12px;
 }
 
 body {
@@ -17,6 +17,19 @@ h2 {
 
 .home-page {
     text-align: center;
+    display: none;
+}
+
+.party-page {
+    display: none;
+}
+
+[page='home'] .home-page {
+    display: block;
+}
+
+[page='party'] .party-page {
+    display: block;
 }
 
 button {
@@ -27,5 +40,19 @@ button {
 #input__party-name {
     padding: 4px;
     margin: 8px auto;
+    display: block;
+}
+
+.logout {
+    display: none;
+    position: fixed;
+    cursor: pointer;
+    right: 10px;
+    top: 10px;
+    width: 16px;
+    height: 16px;
+}
+
+[state='connected'] .logout {
     display: block;
 }
