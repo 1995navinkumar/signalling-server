@@ -36,7 +36,7 @@ var SocketManager = (async function Socket() {
 
     async function makeConnection() {
         return new Promise((resolve, reject) => {
-            socket = new WebSocket(`ws://localhost:8080?mailId=${profile.email}`);
+            socket = new WebSocket(`ws://localhost:8080?email=${profile.email}`);
             socket.onopen = function (e, f) {
                 log("socket connection established ");
                 resolve(socket);

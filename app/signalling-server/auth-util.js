@@ -1,3 +1,5 @@
+var url = require('url');
+
 const AuthUtil = {
     registeredUsers: [{
         username: "navin",
@@ -7,7 +9,9 @@ const AuthUtil = {
         password: "harish"
     }],
     authorize: function authorize(req) {
-        return req.headers['sec-websocket-key']
+        var url_parts = url.parse(req.url, true);
+        var query = url_parts.query;
+        return query.email;
     }
 }
 

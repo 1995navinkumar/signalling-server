@@ -15,8 +15,9 @@ function PartyManager() {
         } else if (action == "end-party") {
             endParty(connection, partyId);
         } else {
-            if(partyId) {
-                getParty(partyId).handleClientRequest(connection, message);
+            if (partyId) {
+                var party = getParty(partyId);
+                party ? party.handleClientRequest(connection,message) : console.log("No party found");
             } else {
                 console.log(message);
             }
@@ -61,6 +62,10 @@ Party.prototype.handleClientRequest = function handleClientRequest(connection, m
         // if authorised send signal else wait for admin permission
         connection.signal(message);
         this.partyMembers.push(connection);
+        // connection.on("disconnect", () => {
+        //     var index = this.partyMembers.findIndex(client => connection.id == client.id);
+        //     this.partyMembers.splice(index, 1);
+        // });
         connection.partyId = this.partyId;
         if (this.DJ) {
             var message = {
