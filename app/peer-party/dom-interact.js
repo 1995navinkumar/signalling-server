@@ -1,7 +1,7 @@
 chrome.runtime.onMessage.addListener(function handler(message) {
-    signal(message);
+    var action = message.action;
+    var data = message.data;
+    if(action == "create-party") {
+        
+    }
 })
-
-function signal(message) {
-    socket.send(JSON.stringify(message));
-}

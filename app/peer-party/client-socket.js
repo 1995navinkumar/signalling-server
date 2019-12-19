@@ -1,16 +1,41 @@
 var log = console.log;
 var audioStream;
-var socket = (function Socket() {
-    var hostName = location.hostname;
-    var connection = new WebSocket(`ws://navin-5490:8080`);
-    connection.onopen = function (e, f) {
-        log("socket connection established ");
+
+function signal(message) {
+    SocketManager.then(socketManager => {
+        socketManager.getSocket().then(socket => {
+            socket.send(JSON.stringify(message));
+        })
+    })
+}
+
+var SocketManager = (async function Socket() {
+    var socket, profile;
+    profile = await getUserProfile();
+    async function getUserProfile() {
+        return new Promise((resolve, reject) => {
+            chrome.identity.getProfileUserInfo(resolve);
+        })
     }
-    connection.onmessage = pipe(messageParser, actionInvoker);
-    connection.onerror = function (e) {
-        log("error in connection establishment");
+    async function getSocket() {
+        return socket || await makeConnection();
     }
-    return connection;
+    async function makeConnection() {
+        return new Promise((resolve, reject) => {
+            socket = new WebSocket(`ws://localhost:8080?mailId=${profile.email}`);
+            socket.onopen = function (e, f) {
+                log("socket connection established ");
+                resolve(socket);
+            }
+            socket.onmessage = pipe(messageParser, actionInvoker);
+            socket.onerror = function (e) {
+                log("error in connection establishment");
+                reject(e);
+            }
+
+        })
+    }
+    return { getSocket };
 })();
 
 const servers = {
@@ -51,7 +76,7 @@ var actions = {
     },
     "join-party": async function (message) {
         var clientIds = message.data.clientIds;
-        var streamObj = audioStream ||  await getAudioStream();
+        var streamObj = audioStream || await getAudioStream();
         clientIds.forEach((clientId) => {
             var clientPeer = new RTC_Connnector(iceServers, streamObj);
             console.log(clientPeer);

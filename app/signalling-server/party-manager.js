@@ -15,7 +15,11 @@ function PartyManager() {
         } else if (action == "end-party") {
             endParty(connection, partyId);
         } else {
-            getParty(partyId).handleClientRequest(connection, message);
+            if(partyId) {
+                getParty(partyId).handleClientRequest(connection, message);
+            } else {
+                console.log(message);
+            }
         }
     }
     function getParty(partyId) {
