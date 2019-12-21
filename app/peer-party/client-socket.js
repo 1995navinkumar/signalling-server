@@ -49,6 +49,8 @@ var SocketManager = (async function Socket() {
             }
             socket.onclose = function () {
                 console.log("socket closed");
+                socket.close();
+                socket = undefined;
             }
 
         })

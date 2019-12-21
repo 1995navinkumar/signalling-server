@@ -1,5 +1,6 @@
 const AuthUtil = require("./auth-util");
 const ConnectionManager = require("./connection-manager");
+const pipe = require("./utils").pipe;
 
 function Socket(server, wss) {
     server.on('upgrade', function (request, socket, head) {

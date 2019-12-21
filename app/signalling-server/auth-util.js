@@ -1,4 +1,5 @@
-var url = require('url');
+const url = require('url');
+const uuid = require("./utils").uuid;
 
 const AuthUtil = {
     registeredUsers: [{
@@ -11,7 +12,7 @@ const AuthUtil = {
     authorize: function authorize(req) {
         var url_parts = url.parse(req.url, true);
         var query = url_parts.query;
-        return query.email;
+        return query.email || uuid();
     }
 }
 
