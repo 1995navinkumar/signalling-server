@@ -1,5 +1,7 @@
 const log = console.log;
-const PartyManager = require("./party-manager");
+const utils = require("./utils");
+const IncomingMessageHandler = require("./incoming-message-handler");
+const OutgoingMessageHandler = require("./outgoing-message-handler");
 
 function ConnectionManager() {
     var activeConnection = {};
@@ -10,8 +12,11 @@ function ConnectionManager() {
         return connection;
     }
     function terminateConnection(connection) {
-        delete activeConnection[connection.id];
-        log("connection terminated : " + connection.id);
+        return (e) => {
+            connection.trigger("close", e);
+            log("connection terminated : " + connection.id);
+            delete activeConnection[connection.id];
+        }
     }
     return {
         createConnection,
@@ -22,12 +27,22 @@ function ConnectionManager() {
 function Connection(ws, sessionId) {
     this.ws = ws;
     this.id = sessionId;
+    Object.assign(this, utils.composeEventHandler());
+    this.incomingMessageHandler = MessageHandler.call(this, IncomingMessageHandler);
+    this.outgoingMessageHandler = MessageHandler.call(this, OutgoingMessageHandler);
 }
-Connection.prototype.handleClientRequest = function handleClientRequest(message) {
-    PartyManager.handleClientRequest(this,JSON.parse(message));
-}
-Connection.prototype.signal = function signal(message){
+
+Connection.prototype.signal = function signal(message) {
     this.ws.send(JSON.stringify(message))
+}
+
+function MessageHandler(categoryMapper) {
+    return (message) => {
+        if (message) {
+            var { category, type, data } = message;
+            categoryMapper[category][type].call(this, data);
+        }
+    }
 }
 
 module.exports = ConnectionManager();;

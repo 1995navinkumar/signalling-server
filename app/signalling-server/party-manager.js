@@ -1,28 +1,9 @@
+const IncomingMessageHandler = require("./incoming-message-handler");
+const OutgoingMessageHandler = require("./outgoing-message-handler");
+const utils = require("./utils");
+
 function PartyManager() {
     var activeParties = {};
-    function handleClientRequest(connection, message) {
-        var action = message.action;
-        var partyId = connection.partyId || (message.data && message.data.partyId);
-        if (action == "create-party") {
-            var party = createParty(connection);
-            var message = {
-                action: "party-creation-success",
-                data: {
-                    partyId: party.partyId
-                }
-            }
-            connection.signal(message);
-        } else if (action == "end-party") {
-            endParty(connection, partyId);
-        } else {
-            if (partyId) {
-                var party = getParty(partyId);
-                party ? party.handleClientRequest(connection,message) : console.log("No party found");
-            } else {
-                console.log(message);
-            }
-        }
-    }
     function getParty(partyId) {
         return activeParties[partyId];
     }
@@ -38,96 +19,53 @@ function PartyManager() {
         console.log("party ended!");
     }
     return {
-        handleClientRequest
+        getParty, createParty, endParty
     }
 }
 
-function Party(connection) {
+
+function Party(connection, invited) {
     this.DJ = undefined;
     this.admin = connection;
     this.partyMembers = [];
-    this.partyId = "navin";
+    this.invited = invited || [];
+    this.partyId = utils.uuid();
+    this.incomingMessageHandler = IncomingMessageHandler.call(this);
+    this.outgoingMessageHandler = OutgoingMessageHandler.call(this);
     connection.partyId = this.partyId;
 }
-Party.prototype.getClient = function getClient(clientId) {
-    return this.partyMembers.filter(client => client.id == clientId)[0];
+Party.prototype.hadDJ = function hasDJ() {
+    return this.DJ ? true : false;
 }
-Party.prototype.handleClientRequest = function handleClientRequest(connection, message) {
-    var action = message.action;
-    var data = message.data;
-    if (action == "join-party") {
-        var message = {
-            action: "join-party-success"
-        }
-        // if authorised send signal else wait for admin permission
-        connection.signal(message);
-        this.partyMembers.push(connection);
-        // connection.on("disconnect", () => {
-        //     var index = this.partyMembers.findIndex(client => connection.id == client.id);
-        //     this.partyMembers.splice(index, 1);
-        // });
-        connection.partyId = this.partyId;
-        if (this.DJ) {
-            var message = {
-                action: "join-party",
-                data: {
-                    clientIds: [connection.id]
-                }
-            }
-            this.DJ.signal(message);
-        }
-    } else if (action == "become-dj") {
-        if (this.DJ) {
-            // handle dj change request
-        } else {
-            this.DJ = connection;
-            connection.signal({ action: "dj-accept" });
 
-            var clientIds = this.partyMembers.map(member => member.id);
-            var message = {
-                action: "join-party",
-                data: { clientIds }
-            }
-            if (clientIds.length > 0) {
-                connection.signal(message);
-            }
-        }
-    } else if (action == "offer") {
-        var offer = data.offer;
-        var clientId = data.clientId;
-        var client = this.getClient(clientId);
-        var message = {
-            action: "offer",
-            data: {
-                offer,
-                clientId
-            }
-        }
-        client.signal(message);
-    } else if (action == "candidate") {
-        var candidate = data.candidate;
-        var clientId = data.clientId;
-        var message = {
-            action: "candidate",
-            data: {
-                candidate,
-                clientId
-            }
-        }
-        var client = this.getClient(clientId);
-        client.signal(message);
-    } else if (action == "answer") {
-        var answer = data.answer;
-        var clientId = data.clientId;
-        var message = {
-            action: "answer",
-            data: {
-                answer,
-                clientId
-            }
-        }
-        this.DJ.signal(message);
-    }
+Party.prototype.getDJ = function getDJ() {
+    return this.DJ;
 }
+
+Party.prototype.getAdmin = function getAdmin() {
+    return this.admin;
+}
+
+Party.prototype.getMemberIds = function getMemberIds() {
+    return this.partyMembers.map(member => member.id);
+}
+
+Party.prototype.addMember = function addMember(member) {
+    this.partyMembers.push(member);
+}
+
+Party.prototype.getMember = function getMember(id) {
+    return this.partyMembers.filter(member => member.id == id);
+}
+
+Party.prototype.setDJ = function setDJ(dj) {
+    this.DJ = dj;
+}
+
+Party.prototype.isInvited = function isInvited(connectionId) {
+    return this.invited.includes(connectionId);
+}
+
+
 
 module.exports = PartyManager();
