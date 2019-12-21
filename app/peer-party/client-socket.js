@@ -94,9 +94,7 @@ function getAudioStream() {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             chrome.tabCapture.capture({ audio: true }, (stream) => {
                 audioStream = stream;
-                var audioObj = new Audio();
-                audioObj.srcObject = stream;
-                audioObj.play();
+                document.getElementById("audio-player").srcObject = stream;
                 resolve(stream);
             });
         });
@@ -112,8 +110,6 @@ var actions = {
         var streamObj = audioStream || await getAudioStream();
         clientIds.forEach((clientId) => {
             var clientPeer = new RTC_Connnector(iceServers, streamObj);
-            console.log(clientPeer);
-
             partyMembers[clientId] = clientPeer;
             clientPeer.on('offerReady', function (offer) {
                 signal({
@@ -147,10 +143,7 @@ var actions = {
         });
         peer.on("streamReady", function ({ streams: [stream] }) {
             console.log("streamReady");
-
-            var audioObj = new Audio();
-            audioObj.srcObject = stream;
-            audioObj.play();
+            document.getElementById("audio-player").srcObject = stream;
         })
         peer.acceptOffer(message.data.offer);
     },
