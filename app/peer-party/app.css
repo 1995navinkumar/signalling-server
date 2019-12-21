@@ -1,18 +1,62 @@
-.video-container {
-    margin: 12px;
-}
-
-.controls {
-    margin: 12px;
+* {
+    box-sizing: border-box;
 }
 
 body {
+    margin: 0;
     width: 300px;
-    height: 100px;
+    height: 240px;
+    padding: 4px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    border-bottom: 1px solid lightgray
+}
+
+.main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100% - 32px);
 }
 
 h2 {
+    margin: 0;
+    padding: 6px;
+    flex: 1;
     text-align: center;
+    position: relative;
+    left: 6px;
+}
+
+#settings-icon {
+    width: 18px;
+    height: 18px;
+    top: 9px;
+    right: 36px;
+    cursor: pointer;
+    margin: 0 4px;
+}
+
+#home-icon {
+    width: 30px;
+    height: 18px;
+    top: 9px;
+    left: 4px;
+    cursor: pointer;
+    order: -1;
+}
+
+#logout-icon {
+    cursor: pointer;
+    right: 10px;
+    top: 10px;
+    width: 16px;
+    height: 16px;
+    margin: 0 4px;
 }
 
 .home-page {
@@ -24,11 +68,24 @@ h2 {
     display: none;
 }
 
+.settings-page {
+    display: none;
+    text-align: center;
+}
+
+[page="settings"] .settings-page {
+    display: block;
+}
+
 [page='home'] .home-page {
     display: block;
 }
 
 [page='party'] .party-page {
+    display: block;
+}
+
+[page='settings'] .settings-page {
     display: block;
 }
 
@@ -43,16 +100,14 @@ button {
     display: block;
 }
 
-.logout {
-    display: none;
-    position: fixed;
-    cursor: pointer;
-    right: 10px;
-    top: 10px;
-    width: 16px;
-    height: 16px;
-}
-
 [state='connected'] .logout {
     display: block;
+}
+
+.video-container {
+    margin: 12px;
+}
+
+.controls {
+    margin: 12px;
 }

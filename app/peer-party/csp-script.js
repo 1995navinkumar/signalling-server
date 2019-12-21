@@ -13,7 +13,13 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
 
     var partyNameInput = document.getElementById("input__party-name");
 
+    var homeIcon = document.getElementById("home-icon");
     var logoutIcon = document.getElementById("logout-icon");
+    var settingsIcon = document.getElementById("settings-icon");
+
+    var serverInput = document.getElementById("server-ip");
+    serverInput.value = localStorage.getItem("server");
+    var serverSetButton = document.getElementById("add-server");
 
     var messageContainer = document.getElementById("message-container");
 
@@ -30,11 +36,26 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
         chrome.runtime.sendMessage({ action: "become-dj" });
     });
 
+    homeIcon.addEventListener("click", function () {
+        setPage("home");
+        updatePageAttr(getPage());
+    })
+
     logoutIcon.addEventListener("click", function () {
-        chrome.runtime.sendMessage({action : "logout"});
+        chrome.runtime.sendMessage({ action: "logout" });
         localStorage.clear();
         updatePageAttr(getPage());
         updateStateAttr(getState());
+    });
+
+    settingsIcon.addEventListener("click", function () {
+        setPage("settings");
+        updatePageAttr(getPage());
+    });
+
+    serverSetButton.addEventListener("click", function () {
+        var value = serverInput.value;
+        localStorage.setItem("server",value);
     });
 
     chrome.runtime.onMessage.addListener(function handler(message) {

@@ -11,22 +11,34 @@
 </head>
 
 <body>
-    <h2>Peer Party !!</h2>
-    <img id="logout-icon" class="logout" src="assets/logout.png" alt="" srcset="">
+    <div class="header">
+        <h2>Peer Party !!</h2>
+        <img id="home-icon" src="assets/home-icon.png" alt="">
+        <img id="settings-icon" src="./assets/settings.png" alt="">
+        <img id="logout-icon" src="assets/logout.png" alt="" srcset="">
+    </div>
     <div id="message-container">
 
     </div>
-    <div class="home-page">
-        <input id="input__party-name" type="text" placeholder="enter party name to join">
-        <button id="join-party">Join Party</button>
-        <button id="create-party">Create Party</button>
-    </div>
+    <div class="main">
 
-    <div class="party-page">
-        <div id="party-name"></div>
-        <audio id="audio-player" autoplay controls></audio>
-        <div class="controls">
-            <button id="become-dj">Become DJ</button>
+        <div class="home-page">
+            <input id="input__party-name" type="text" placeholder="enter party name to join">
+            <button id="join-party">Join Party</button>
+            <button id="create-party">Create Party</button>
+        </div>
+
+        <div class="party-page">
+            <div id="party-name"></div>
+            <audio id="audio-player" autoplay controls></audio>
+            <div class="controls">
+                <button id="become-dj">Become DJ</button>
+            </div>
+        </div>
+
+        <div class="settings-page" hide>
+            <input id="server-ip" type="text" placeholder="enter server ip">
+            <button id="add-server">Set</button>
         </div>
     </div>
 </body>

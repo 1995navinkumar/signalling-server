@@ -36,7 +36,8 @@ var SocketManager = (async function Socket() {
 
     async function makeConnection() {
         return new Promise((resolve, reject) => {
-            socket = new WebSocket(`ws://localhost:8080?email=${profile.email}`);
+            var hostName = localStorage.getItem("server");
+            socket = new WebSocket(`ws://${hostName}?email=${profile.email}`);
             socket.onopen = function (e, f) {
                 log("socket connection established ");
                 resolve(socket);
@@ -46,7 +47,7 @@ var SocketManager = (async function Socket() {
                 log("error in connection establishment");
                 reject(e);
             }
-            socket.onclose = function(){
+            socket.onclose = function () {
                 console.log("socket closed");
             }
 
