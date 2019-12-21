@@ -1,5 +1,3 @@
-const IncomingMessageHandler = require("./incoming-message-handler");
-const OutgoingMessageHandler = require("./outgoing-message-handler");
 const utils = require("./utils");
 
 function PartyManager() {
@@ -7,10 +5,10 @@ function PartyManager() {
     function getParty(partyId) {
         return activeParties[partyId];
     }
-    function createParty(connection) {
-        var party = new Party(connection);
+    function createParty(connection, invited) {
+        var party = new Party(connection, invited);
         activeParties[party.partyId] = party;
-        console.log("party created");
+        console.log(`party created : ${party.partyId}`);
         return party;
     }
 
@@ -30,9 +28,8 @@ function Party(connection, invited) {
     this.partyMembers = [];
     this.invited = invited || [];
     this.partyId = utils.uuid();
-    this.incomingMessageHandler = IncomingMessageHandler.call(this);
-    this.outgoingMessageHandler = OutgoingMessageHandler.call(this);
     connection.partyId = this.partyId;
+    connection.on("close",this.removeMember);
 }
 Party.prototype.hadDJ = function hasDJ() {
     return this.DJ ? true : false;
@@ -52,6 +49,7 @@ Party.prototype.getMemberIds = function getMemberIds() {
 
 Party.prototype.addMember = function addMember(member) {
     this.partyMembers.push(member);
+    member.on("close", this.removeMember);
 }
 
 Party.prototype.getMember = function getMember(id) {
@@ -63,7 +61,17 @@ Party.prototype.setDJ = function setDJ(dj) {
 }
 
 Party.prototype.isInvited = function isInvited(connectionId) {
-    return this.invited.includes(connectionId);
+    // return this.invited.includes(connectionId);
+    return true;
+}
+
+Party.prototype.removeMember = function removeMember(member) {
+    console.log("remove member");
+    
+}
+
+Party.prototype.removeAdmin = function removeAdmin(){
+
 }
 
 

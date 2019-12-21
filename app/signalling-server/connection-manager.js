@@ -13,7 +13,7 @@ function ConnectionManager() {
     }
     function terminateConnection(connection) {
         return (e) => {
-            connection.trigger("close", e);
+            connection.trigger("close", connection);
             log("connection terminated : " + connection.id);
             delete activeConnection[connection.id];
         }
@@ -39,8 +39,9 @@ Connection.prototype.signal = function signal(message) {
 function MessageHandler(categoryMapper) {
     return (message) => {
         if (message) {
-            var { category, type, data } = message;
-            categoryMapper[category][type].call(this, data);
+            console.log(message);
+            var { category, type } = message;
+            return categoryMapper[category][type](this, message);
         }
     }
 }

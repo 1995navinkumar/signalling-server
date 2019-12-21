@@ -2,12 +2,16 @@ const PartyManager = require("./party-manager");
 
 var request = {
     "create-party": function createParty(connection, message) {
-        var data = message.data;
+        var data = message.data || {};
+        var outgoing = {};
+        message.outgoing = outgoing;
         try {
-            var party = PartyManager.createParty(connection,data.invited);
-            data.partyId = party.partyId;
+            var party = PartyManager.createParty(connection, data.invited);
+            outgoing.partyId = party.partyId;
+            outgoing.status = "success";
         } catch (error) {
-            console.log("Error in creating party");
+            console.log("Error in creating party", error);
+            outgoing.status = "failure";
         }
         return message;
     },

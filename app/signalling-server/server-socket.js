@@ -1,6 +1,6 @@
 const AuthUtil = require("./auth-util");
 const ConnectionManager = require("./connection-manager");
-const pipe = require("./utils").pipe;
+const utils = require("./utils");
 
 function Socket(server, wss) {
     server.on('upgrade', function (request, socket, head) {
@@ -18,7 +18,7 @@ function Socket(server, wss) {
 
     wss.on('connection', function onConnection(ws, sessionId) {
         var connection = ConnectionManager.createConnection(ws, sessionId);
-        ws.on("message", pipe(connection.incomingMessageHandler, connection.outgoingMessageHandler));
+        ws.on("message", utils.pipe(utils.parser,connection.incomingMessageHandler, connection.outgoingMessageHandler));
         ws.on("close", ConnectionManager.terminateConnection(connection));
         ws.on("error", console.log);
     });

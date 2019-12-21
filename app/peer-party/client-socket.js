@@ -31,6 +31,7 @@ var SocketManager = (async function Socket() {
         if (socket) {
             socket.close(1000, "User logged out");
             socket = undefined;
+            reset();
         }
     }
 
@@ -49,7 +50,6 @@ var SocketManager = (async function Socket() {
             }
             socket.onclose = function () {
                 console.log("socket closed");
-                socket.close();
                 socket = undefined;
             }
 
@@ -75,6 +75,19 @@ function messageParser(message) {
 }
 
 var peer, partyMembers = {};
+
+function reset() {
+    if (peer) {
+        peer.close();
+        peer = undefined;
+    }
+    if (Object.keys(partyMembers).length > 0) {
+        partyMembers.forEach(peerCon => {
+            peerCon.close();
+        })
+        partyMembers = {};
+    }
+}
 
 function getAudioStream() {
     return new Promise(function (resolve, reject) {
@@ -156,6 +169,8 @@ var actions = {
 }
 
 function actionInvoker(message) {
-    actions[message.action] && actions[message.action](message);
+    console.log("invoker");
+
+    actions[message.type] && actions[message.type](message);
     chrome.runtime.sendMessage(message);
 }

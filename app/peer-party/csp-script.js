@@ -24,11 +24,16 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
     var messageContainer = document.getElementById("message-container");
 
     createPartyButton.addEventListener("click", function () {
-        chrome.runtime.sendMessage({ action: "create-party" });
+        createPartyButton.disabled = true;
+        chrome.runtime.sendMessage({
+            category: "request",
+            type: "create-party"
+        });
     });
 
     joinPartyButton.addEventListener("click", function () {
         var partyId = partyNameInput.value;
+        joinPartyButton.disabled = true;
         chrome.runtime.sendMessage({ action: "join-party", data: { partyId } });
     });
 
@@ -43,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
 
     logoutIcon.addEventListener("click", function () {
         chrome.runtime.sendMessage({ action: "logout" });
-        localStorage.clear();
+        clearState();
         updatePageAttr(getPage());
         updateStateAttr(getState());
     });
@@ -55,27 +60,27 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
 
     serverSetButton.addEventListener("click", function () {
         var value = serverInput.value;
-        localStorage.setItem("server",value);
+        localStorage.setItem("server", value);
     });
 
     chrome.runtime.onMessage.addListener(function handler(message) {
-        var action = message.action;
-        if (action == "party-creation-success") {
+        var type = message.type;
+        if (type == "party-creation-success") {
             setPage("party");
             setState("connected");
             updatePageAttr(getPage());
             updateStateAttr(getState());
-        } else if (action == "party-creation-failure") {
+        } else if (type == "party-creation-failure") {
             showMessage(message.data);
-        } else if (action == "join-party-success") {
+        } else if (type == "join-party-success") {
             setPage("party");
             setState("connected");
             updatePageAttr(getPage());
             updateStateAttr(getState());
-        } else if (action == "dj-accept") {
+        } else if (type == "dj-accept") {
             console.log("dj accepted");
             showMessage("dj accepted");
-        } else if (action == "join-party") {
+        } else if (type == "join-party") {
             console.log(message);
         }
     });
@@ -111,4 +116,9 @@ function setState(state) {
 
 function setPage(page) {
     localStorage.setItem("page", page);
+}
+
+function clearState() {
+    localStorage.removeItem("state");
+    localStorage.removeItem("page");
 }
