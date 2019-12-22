@@ -1,4 +1,3 @@
-
 chrome.runtime.onStartup.addListener(function () {
-    localStorage.setItem("state", "idle");
+    localStorage.setItem("state", "new");
 });
