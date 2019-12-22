@@ -1,0 +1,26 @@
+#login-button {
+    width: 108px;
+    height: 32px;
+    background-color: #6a2aa5;
+    color: white;
+    font-weight: bolder;
+    font-size: 16px;
+}
+
+.login-page {
+    padding: 8px;
+    margin: 8px 0px;
+}
+
+#logout-icon {
+    cursor: pointer;
+    right: 10px;
+    top: 10px;
+    width: 16px;
+    height: 16px;
+    margin: 0 4px;
+}
+
+[state='connected'] .logout {
+    display: block;
+}

@@ -1,0 +1,23 @@
+#home-icon {
+    width: 30px;
+    height: 18px;
+    top: 9px;
+    left: 4px;
+    cursor: pointer;
+    order: -1;
+}
+
+.home-page {
+    text-align: center;
+    display: none;
+}
+
+[page='home'] .home-page {
+    display: block;
+}
+
+#input__party-name {
+    padding: 4px;
+    margin: 8px auto;
+    display: block;
+}

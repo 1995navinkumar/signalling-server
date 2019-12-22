@@ -1,0 +1,17 @@
+.settings-page {
+    display: none;
+    text-align: center;
+}
+
+[page='settings'] .settings-page {
+    display: block;
+}
+
+#settings-icon {
+    width: 18px;
+    height: 18px;
+    top: 9px;
+    right: 36px;
+    cursor: pointer;
+    margin: 0 4px;
+}

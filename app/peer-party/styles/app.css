@@ -3,13 +3,35 @@
 }
 
 body {
-    margin: 0;
     width: 300px;
     height: 300px;
     padding: 4px;
 }
+
 button {
-    cursor: pointer;
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 0 0.3em 0.3em 0;
+    border-radius: 0.2em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    color: #FFFFFF;
+    background-color: #6a2aa5;
+    box-shadow: inset 0 -0.6em 1em -0.35em rgba(0, 0, 0, 0.17), inset 0 0.6em 2em -0.3em rgba(255, 255, 255, 0.15), inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12);
+    text-align: center;
+    position: relative;
+    font-size: 12px;
+}
+
+input {
+    padding: 2px;
+    margin: 0;
+    border: 1px solid gray;
+    border-radius: 6px;
+    font: inherit;
+    outline: none;
 }
 
 .header {
@@ -34,103 +56,11 @@ h2 {
     text-align: center;
     position: relative;
     left: 6px;
+    font-size: larger;
+    font-weight: bolder;
 }
 
 #party-icon {
     width: 88px;
     height: 88px;
-}
-
-#settings-icon {
-    width: 18px;
-    height: 18px;
-    top: 9px;
-    right: 36px;
-    cursor: pointer;
-    margin: 0 4px;
-}
-
-#home-icon {
-    width: 30px;
-    height: 18px;
-    top: 9px;
-    left: 4px;
-    cursor: pointer;
-    order: -1;
-}
-
-#logout-icon {
-    cursor: pointer;
-    right: 10px;
-    top: 10px;
-    width: 16px;
-    height: 16px;
-    margin: 0 4px;
-}
-
-.login-page {
-    padding: 8px;
-    margin: 8px 0px;
-}
-
-#login-button {
-    width: 108px;
-    height: 32px;
-    background-color: #6a2aa5;
-    color: white;
-    font-weight: bolder;
-    font-size: 16px;
-}
-
-.home-page {
-    text-align: center;
-    display: none;
-}
-
-.party-page {
-    display: none;
-}
-
-.settings-page {
-    display: none;
-    text-align: center;
-}
-
-[page="settings"] .settings-page {
-    display: block;
-}
-
-[page='home'] .home-page {
-    display: block;
-}
-
-[page='party'] .party-page {
-    display: block;
-}
-
-[page='settings'] .settings-page {
-    display: block;
-}
-
-button {
-    padding: 3px;
-    margin: 0px 4px;
-}
-
-#input__party-name {
-    padding: 4px;
-    margin: 8px auto;
-    display: block;
-}
-
-[state='connected'] .logout {
-    display: block;
-}
-
-.video-container {
-    margin: 12px;
-}
-
-.controls {
-    margin: 12px;
 }
