@@ -1,54 +1,46 @@
 const PartyManager = require("./party-manager");
 
 var request = {
-    "create-party": function createParty(connection, message) {
+    "create-party": function createParty(requester, message) {
         var data = message.data || {};
-        var outgoing = {};
-        message.outgoing = outgoing;
         try {
-            var party = PartyManager.createParty(connection, data.invited);
-            outgoing.partyId = party.partyId;
-            outgoing.status = "success";
+            var party = PartyManager.createParty(requester, data.invited);
+            requester.respond({ type: "party-creation-success", data: { partyId: party.partyId } });
         } catch (error) {
+            requester.respond({ type: "party-creation-failure" });
             console.log("Error in creating party", error);
-            outgoing.status = "failure";
         }
-        return message;
     },
-    "join-party": function joinParty(connection, message) {
-        var partyId = message.data.partyId;
-        var party = PartyManager.getParty(partyId);
+    "join-party": function joinParty(requester, message) {
         var data = message.data;
-        var isInvited = party.isInvited(connection);
+        var partyId = data.partyId;
+        var party = PartyManager.getParty(partyId);
+        var isInvited = party.isInvited(requester);
         if (isInvited) {
-            party.addMember(connection);
-            data.status = "success";
+            party.addMember(requester);
+            requester.respond({ type: "join-party-success" });
             if (party.hasDJ()) {
-                data.memberIds = [connection.id];
                 var dj = party.getDJ();
-                dj.outgoingMessageHandler(message);
+                dj.notify({ type: "join-party", data: { memberIds: [requester.id] } });
             }
+
         } else {
             // notify admin about the request
             var admin = party.getAdmin();
-            data.clientId = connection.id;
-            admin.outgoingMessageHandler(message);
+            admin.forward(connection, message);
         }
-        return message;
     },
-    "become-dj": function becomeDJ(connection, message) {
+    "become-dj": function becomeDJ(requester, message) {
         var { data } = message;
-        var party = PartyManager.getParty(connection.partyId);
-        if (party.hasDJ()) {
-            var admin = party.getAdmin();
-            data.memberId = connection.id;
-            data.status = "pending";
-            admin.outgoingMessageHandler(message);
+        var party = PartyManager.getParty(requester.partyId);
+        if (party.isAdmin(requester)) {
+            requester.respond({ type: "dj-accept" });
+            requester.notify({ type: "join-party", data: { memberIds: party.getMemberIds() } });
         } else {
-            party.setDJ(connection);
-            data.memberIds = party.getMemberIds();
+            var admin = party.getAdmin();
+            admin.forward(requester, message);
+            requester.notify({ type: "become-dj-pending" });
         }
-        return message;
     },
     "end-party": function endParty(connection, message) {
 
@@ -58,13 +50,12 @@ var request = {
     }
 };
 
-function rtc(connection, message) {
+function rtc(sender, message) {
     var { data } = message;
-    var memberId = data.memberId;
-    var party = PartyManager.getParty(connection.id);
-    var member = party.getMember(memberId);
-    data.memberId = connection.id;
-    member.outgoingMessageHandler(message);
+    var recipientId = data.memberId;
+    var party = PartyManager.getParty(recipientId);
+    var recipient = party.getMember(recipientId);
+    recipient.forward(sender, message);
 }
 
 var webrtc = {
