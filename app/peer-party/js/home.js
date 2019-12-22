@@ -21,8 +21,7 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
     });
 
     homeIcon.addEventListener("click", function () {
-        setPage("home");
-        updatePageAttr(getPage());
+        updatePage("home");
     });
 
     chrome.runtime.onMessage.addListener(function handler(message) {

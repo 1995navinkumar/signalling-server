@@ -4,8 +4,7 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
     serverInput.value = localStorage.getItem("server");
     var serverSetButton = document.getElementById("add-server");
     settingsIcon.addEventListener("click", function () {
-        setPage("settings");
-        updatePageAttr(getPage());
+        updatePage("settings");
     });
     serverSetButton.addEventListener("click", function () {
         var value = serverInput.value;

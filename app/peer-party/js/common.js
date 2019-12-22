@@ -16,7 +16,7 @@ function updateState(state) {
 
 function updatePage(page) {
     localStorage.setItem("page", page);
-    document.body.setAttribute("page", state);
+    document.body.setAttribute("page", page);
 }
 
 function showMessage(msg) {

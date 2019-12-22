@@ -167,3 +167,80 @@ function actionInvoker(message) {
     actions[message.type] && actions[message.type](message);
     chrome.runtime.sendMessage(message);
 }
+
+
+
+
+
+
+var ConnectionManager = (function ConnectionManager() {
+    var activeConnection;
+    function createConnection(userProfile) {
+        var hostName = localStorage.getItem("server");
+        activeConnection = new Connection(hostName, userProfile);
+        return activeConnection;
+    }
+    function terminateConnection() {
+        activeConnection.trigger("close", connection);
+        activeConnection.close();
+        log("connection terminated");
+    }
+    return {
+        createConnection,
+        terminateConnection,
+        getConnection
+    }
+})();
+
+function Connection(hostName, profile) {
+
+    this.ws = new WebSocket(`ws://${hostName}?email=${profile.email}`);
+    this.incomingMessageHandler = MessageHandler.call(this, IncomingMessageHandler);
+    Object.assign(this, utils.composeEventHandler());
+
+    ws.onopen = function (e, f) {
+        log("socket connection established ");
+    }
+    ws.onmessage = pipe(messageParser, this.incomingMessageHandler);
+
+    ws.onerror = function (e) {
+        log("error in connection establishment", e);
+    }
+    ws.onclose = function () {
+        console.log("socket closed");
+    }
+}
+
+Connection.prototype.signal = function signal(message) {
+    this.ws.send(JSON.stringify(message))
+}
+
+Connection.prototype.request = function request(message) {
+    this.signal(message);
+}
+
+Connection.prototype.respond = function respond(to, message) {
+    message.category = "response";
+    message.data.memberId = to;
+    this.signal(message);
+}
+
+Connection.prototype.action = function action(message) {
+    message.category = "action";
+    this.signal(message);
+}
+
+Connection.prototype.webrtc = function webrtc(message) {
+    message.category = "webrtc";
+    this.signal(message);
+}
+
+function MessageHandler(categoryMapper) {
+    return (message) => {
+        if (message) {
+            console.log(message);
+            var { category, type } = message;
+            return categoryMapper[category][type](this, message);
+        }
+    }
+}
