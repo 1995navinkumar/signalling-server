@@ -6,8 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link rel="stylesheet" href="app.css">
-    <script src="./csp-script.js"></script>
+    
+    <link rel="stylesheet" href="styles/app.css">
+    <link rel="stylesheet" href="styles/login-page.css">
+    <link rel="stylesheet" href="styles/home-page.css">
+    <link rel="stylesheet" href="styles/party-page.css">
+    <link rel="stylesheet" href="styles/settings-page.css">
+
+    <script src="js/login-page.js"></script>
+    <script src="js/home-page.js"></script>
+    <script src="js/party-page.js"></script>
+    <script src="js/settings-page.js"></script>
+
+
 </head>
 
 <body>
@@ -21,7 +32,15 @@
 
     </div>
     <div class="main">
+        <div>
+            <img id="party-icon" src="assets/party-icon.png" alt="">
+        </div>
 
+        <div class="login-page">
+            <button id="login-button">
+                Dive In
+            </button>
+        </div>
         <div class="home-page">
             <input id="input__party-name" type="text" placeholder="enter party name to join">
             <button id="join-party">Join Party</button>

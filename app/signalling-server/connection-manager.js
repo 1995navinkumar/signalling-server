@@ -1,7 +1,6 @@
 const log = console.log;
 const utils = require("./utils");
 const IncomingMessageHandler = require("./incoming-message-handler");
-const OutgoingMessageHandler = require("./outgoing-message-handler");
 
 function ConnectionManager() {
     var activeConnection = {};

@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
     var messageContainer = document.getElementById("message-container");
 
     createPartyButton.addEventListener("click", function () {
-        createPartyButton.disabled = true;
+        // createPartyButton.disabled = true;
+        // joinPartyButton.disabled = true;
         chrome.runtime.sendMessage({
             category: "request",
             type: "create-party"

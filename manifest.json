@@ -8,11 +8,11 @@
   },
   "background": {
     "scripts": [
-      "app/peer-party/state.js",
-      "app/peer-party/utils.js",
-      "app/peer-party/dom-interact.js",
-      "app/peer-party/rtc.js",
-      "app/peer-party/client-socket.js"
+      "app/peer-party/background-scripts/state.js",
+      "app/peer-party/background-scripts/utils.js",
+      "app/peer-party/background-scripts/dom-interact.js",
+      "app/peer-party/background-scripts/rtc.js",
+      "app/peer-party/background-scripts/client-socket.js"
     ],
     "persistent": true
   },
