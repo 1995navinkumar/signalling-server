@@ -12,6 +12,11 @@ body {
     display: none;
 }
 
+[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 button {
     display: inline-block;
     padding: 4px 8px;

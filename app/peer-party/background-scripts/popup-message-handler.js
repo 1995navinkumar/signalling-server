@@ -13,7 +13,11 @@ var login = {
 }
 
 var home = {
-
+    "create-party" : function(popup,data){
+        ConnectionManager.getConnection().request({
+            type : "create-party"
+        });
+    }
 }
 
 var party = {
@@ -33,6 +37,6 @@ function PopupMessageHandler(pageMapper) {
     return (message) => {
         console.log(message);
         var { page, type } = message;
-        return pageMapper[page][type](this, message);
+        return pageMapper[page][type](this, message.data);
     }
 }

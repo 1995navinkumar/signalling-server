@@ -170,9 +170,17 @@ function actionInvoker(message) {
 
 
 
-var IncomingMessageHandler = {
-    response : function(connection,message){
-        console.log(connection,message);
-        
+
+var response = {
+    "party-creation-success": function (connection, data) {
+        chrome.runtime.sendMessage({
+            page: "home",
+            type: "party-creation-success",
+            data
+        })
     }
+}
+
+var IncomingMessageHandler = {
+    response
 }

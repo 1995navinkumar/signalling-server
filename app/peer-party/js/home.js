@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
 
 
     createPartyButton.addEventListener("click", function () {
-        // createPartyButton.disabled = true;
-        // joinPartyButton.disabled = true;
+        createPartyButton.disabled = true;
+        joinPartyButton.disabled = true;
         chrome.runtime.sendMessage({
-            category: "request",
+            page: "home",
             type: "create-party"
         });
     });
@@ -37,10 +37,13 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
         }
     })
 
-    chrome.runtime.onMessage.addListener(function handler(message) { 
+    chrome.runtime.onMessage.addListener(function handler(message) {
         var page = message.page;
-        if(page == "home"){
-            
+        var type = message.type;
+        if (page == "home") {
+            if (type == "party-creation-success") {
+                redirectTo("party");
+            }
         }
     })
 })

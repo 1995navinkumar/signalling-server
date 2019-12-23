@@ -21,9 +21,13 @@ var ConnectionManager = (function ConnectionManager() {
         activeConnection.close();
         log("connection terminated");
     }
+    function getConnection() {
+        return activeConnection;
+    }
     return {
         createConnection,
-        terminateConnection
+        terminateConnection,
+        getConnection
     }
 })();
 
@@ -61,6 +65,7 @@ Connection.prototype.signal = function signal(message) {
 }
 
 Connection.prototype.request = function request(message) {
+    message.category = "request";
     this.signal(message);
 }
 
@@ -83,7 +88,7 @@ Connection.prototype.webrtc = function webrtc(message) {
 function MessageHandler(categoryMapper) {
     return (message) => {
         console.log(message);
-        var { category, type } = message;
-        return categoryMapper[category][type](this, message);
+        var { category, type, data } = message;
+        return categoryMapper[category][type](this, data);
     }
 }
