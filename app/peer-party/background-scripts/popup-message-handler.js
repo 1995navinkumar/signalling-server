@@ -12,10 +12,18 @@ var login = {
     }
 }
 
+var home = {
+
+}
+
+var party = {
+
+}
+
 var pageMapper = {
-    login
-    // home,
-    // party
+    login,
+    home,
+    party
 }
 
 
