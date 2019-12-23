@@ -4,10 +4,18 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
     var homeIcon = document.getElementById("home-icon");
     var partyNameInput = document.getElementById("input__party-name");
 
-
-    createPartyButton.addEventListener("click", function () {
+    function disableButtons() {
         createPartyButton.disabled = true;
         joinPartyButton.disabled = true;
+    }
+
+    function enableButtons() {
+        createPartyButton.disabled = false;
+        joinPartyButton.disabled = false;
+    }
+
+    createPartyButton.addEventListener("click", function () {
+        disableButtons();
         chrome.runtime.sendMessage({
             page: "home",
             type: "create-party"
@@ -15,27 +23,14 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
     });
 
     joinPartyButton.addEventListener("click", function () {
+        disableButtons();
         var partyId = partyNameInput.value;
-        joinPartyButton.disabled = true;
-        chrome.runtime.sendMessage({ action: "join-party", data: { partyId } });
+        chrome.runtime.sendMessage({
+            page: "home",
+            type: "join-party",
+            data: { partyId }
+        });
     });
-
-    // homeIcon.addEventListener("click", function () {
-    //     updatePage("home");
-    // });
-
-    chrome.runtime.onMessage.addListener(function handler(message) {
-        var type = message.type;
-        if (type == "party-creation-success") {
-            updatePage("party");
-            updateState("connected");
-        } else if (type == "party-creation-failure") {
-            showMessage(message.data);
-        } else if (type == "join-party-success") {
-            updatePage("party");
-            updateState("connected");
-        }
-    })
 
     chrome.runtime.onMessage.addListener(function handler(message) {
         var page = message.page;
@@ -43,6 +38,10 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
         if (page == "home") {
             if (type == "party-creation-success") {
                 redirectTo("party");
+                enableButtons();
+            } else if (type == "join-party-success") {
+                redirectTo("party");
+                enableButtons();
             }
         }
     })
