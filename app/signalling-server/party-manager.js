@@ -31,7 +31,7 @@ function Party(connection, invited) {
     connection.partyId = this.partyId;
     connection.on("close",this.removeMember);
 }
-Party.prototype.hadDJ = function hasDJ() {
+Party.prototype.hasDJ = function hasDJ() {
     return this.DJ ? true : false;
 }
 

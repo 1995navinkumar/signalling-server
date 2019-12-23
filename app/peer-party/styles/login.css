@@ -27,6 +27,6 @@
     display: block;
 }
 
-[state='connected'] .logout {
+[state='connected'] #logout-icon {
     display: block;
 }

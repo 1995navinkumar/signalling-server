@@ -120,6 +120,13 @@ var response = {
             type: "party-creation-success",
             data
         })
+    },
+    "join-party-success": function (connection, data) {
+        chrome.runtime.sendMessage({
+            page: "home",
+            type: "join-party-success",
+            data
+        })
     }
 }
 

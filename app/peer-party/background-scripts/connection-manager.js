@@ -19,7 +19,7 @@ var ConnectionManager = (function ConnectionManager() {
     function terminateConnection() {
         activeConnection.trigger("close");
         activeConnection.close();
-        log("connection terminated");
+        console.log("connection terminated");
     }
     function getConnection() {
         return activeConnection;

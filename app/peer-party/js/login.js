@@ -27,9 +27,11 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
         if (page == "login") {
             if (type == "login-success") {
                 redirectTo("home");
+                updateState("connected");
                 logoutIcon.style.display = "block";
             } else if (type == "logout-success") {
                 redirectTo("login");
+                updateState("disconnected");
                 logoutIcon.style.display = "none";
             }
         }
