@@ -1,27 +1,30 @@
-chrome.runtime.onMessage.addListener(MessageHandler.call(chrome.runtime, categoryMapper));
-
-function MessageHandler(categoryMapper) {
-    return (message) => {
-        console.log(message);
-        var { category, type } = message;
-        return categoryMapper[category][type](this, data);
-    }
-}
 
 var login = {
     login: function login(popup, data) {
         ConnectionManager.createConnection().then(connection => {
-            popup.sendMessage({ category: "login", type: "login-success" });
+            console.log(connection);
+            popup.sendMessage({ page: "login", type: "login-success" });
         })
     },
     logout: function logout(popup, data) {
         ConnectionManager.terminateConnection();
-        popup.sendMessage({ category: "login", type: "logout-success" });
+        popup.sendMessage({ page: "login", type: "logout-success" });
     }
 }
 
-var categoryMapper = {
-    login,
-    home,
-    party
+var pageMapper = {
+    login
+    // home,
+    // party
+}
+
+
+chrome.runtime.onMessage.addListener(PopupMessageHandler.call(chrome.runtime, pageMapper));
+
+function PopupMessageHandler(pageMapper) {
+    return (message) => {
+        console.log(message);
+        var { page, type } = message;
+        return pageMapper[page][type](this, message);
+    }
 }

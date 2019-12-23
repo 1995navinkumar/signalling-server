@@ -20,9 +20,9 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
         chrome.runtime.sendMessage({ action: "join-party", data: { partyId } });
     });
 
-    homeIcon.addEventListener("click", function () {
-        updatePage("home");
-    });
+    // homeIcon.addEventListener("click", function () {
+    //     updatePage("home");
+    // });
 
     chrome.runtime.onMessage.addListener(function handler(message) {
         var type = message.type;
@@ -34,6 +34,13 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
         } else if (type == "join-party-success") {
             updatePage("party");
             updateState("connected");
+        }
+    })
+
+    chrome.runtime.onMessage.addListener(function handler(message) { 
+        var page = message.page;
+        if(page == "home"){
+            
         }
     })
 })

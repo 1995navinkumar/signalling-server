@@ -167,3 +167,12 @@ function actionInvoker(message) {
     actions[message.type] && actions[message.type](message);
     chrome.runtime.sendMessage(message);
 }
+
+
+
+var IncomingMessageHandler = {
+    response : function(connection,message){
+        console.log(connection,message);
+        
+    }
+}

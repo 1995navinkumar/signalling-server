@@ -1,12 +1,22 @@
+window.addEventListener("hashchange", function () {
+    var hash = window.location.hash;
+    updatePage(hash.slice(1));
+});
+
 document.addEventListener("DOMContentLoaded", function addListeners() {
     setPageAndState();
 });
+
+function redirectTo(pageName) {
+    window.location.hash = pageName;
+}
 
 function setPageAndState() {
     var state = localStorage.getItem("state") || "disconnected";
     var page = localStorage.getItem("page") || "login";
     document.body.setAttribute("state", state);
     document.body.setAttribute("page", page);
+    window.location.hash = page; // Initial hashchange is not detected !!!
 }
 
 function updateState(state) {

@@ -9,9 +9,9 @@ async function getUserProfile() {
 
 var ConnectionManager = (function ConnectionManager() {
     var activeConnection;
-    function createConnection() {
+    async function createConnection() {
         var userProfile = await getUserProfile();
-        var hostName = localStorage.getItem("server");
+        var hostName = localStorage.getItem("server") || "192.168.43.57:8080";
         var ws = await makeConnection(hostName, userProfile);
         activeConnection = new Connection(ws);
         return activeConnection;
@@ -23,8 +23,7 @@ var ConnectionManager = (function ConnectionManager() {
     }
     return {
         createConnection,
-        terminateConnection,
-        getConnection
+        terminateConnection
     }
 })();
 
@@ -48,9 +47,13 @@ async function makeConnection(hostName, profile) {
 
 function Connection(ws) {
     this.ws = ws;
-    this.incomingMessageHandler = MessageHandler.call(this, IncomingMessageHandler);
-    Object.assign(this, utils.composeEventHandler());
-    ws.onmessage = pipe(messageParser, this.incomingMessageHandler);
+    this.IncomingMessageHandler = MessageHandler.call(this, IncomingMessageHandler);
+    Object.assign(this, composeEventHandler());
+    ws.onmessage = pipe(messageParser, this.IncomingMessageHandler);
+}
+
+Connection.prototype.close = function close() {
+    this.ws.close(1000, "logged out");
 }
 
 Connection.prototype.signal = function signal(message) {
@@ -79,10 +82,8 @@ Connection.prototype.webrtc = function webrtc(message) {
 
 function MessageHandler(categoryMapper) {
     return (message) => {
-        if (message) {
-            console.log(message);
-            var { category, type } = message;
-            return categoryMapper[category][type](this, message);
-        }
+        console.log(message);
+        var { category, type } = message;
+        return categoryMapper[category][type](this, message);
     }
 }

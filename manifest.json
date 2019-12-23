@@ -10,9 +10,10 @@
     "scripts": [
       "app/peer-party/background-scripts/state.js",
       "app/peer-party/background-scripts/utils.js",
-      "app/peer-party/background-scripts/dom-interact.js",
       "app/peer-party/background-scripts/rtc.js",
-      "app/peer-party/background-scripts/client-socket.js"
+      "app/peer-party/background-scripts/popup-message-handler.js",
+      "app/peer-party/background-scripts/server-message-handler.js",
+      "app/peer-party/background-scripts/connection-manager.js"
     ],
     "persistent": true
   },
