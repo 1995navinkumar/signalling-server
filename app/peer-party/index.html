@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="styles/home.css">
     <link rel="stylesheet" href="styles/party.css">
     <link rel="stylesheet" href="styles/settings.css">
+    <link rel="stylesheet" href="styles/notification.css">
 
     <script src="js/common.js"></script>
     <script src="js/login.js"></script>
@@ -27,12 +28,17 @@
         <h2>Peer Party !!</h2>
         <!-- <img hide id="home-icon" src="assets/home-icon.png" alt=""> -->
         <img id="settings-icon" src="./assets/settings.png" alt="">
+        <div class="notification-icon-container">
+            <img id="notification-icon" class="icon" hide src="./assets/notification-icon.png" alt="" srcset="">
+            <div hide class="dot"></div>
+        </div>
+
         <img hide id="logout-icon" src="assets/logout.png" alt="" srcset="">
     </div>
     <div id="message-container">
 
     </div>
-    <div class="main">
+    <div hide class="main">
         <div hide class="login-page">
             <img id="party-icon" src="assets/party-icon.png" alt="">
             <button id="login-button">
@@ -61,6 +67,16 @@
             <input id="turn-server" type="text" name="">
 
             <button id="save-settings">Save</button>
+        </div>
+    </div>
+    <div hide class="notification-page">
+        <div class="notification-list">
+            <div class="notification-content">
+                <p class="message">Become DJ</p>
+                <p class="requester">harish@gmail.com</p>
+            </div>
+            <button>Accept</button>
+            <button>Decline</button>
         </div>
     </div>
 </body>
