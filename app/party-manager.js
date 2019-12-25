@@ -1,4 +1,5 @@
 const utils = require("./utils");
+const logger = require("../app-logger");
 
 function PartyManager() {
     var activeParties = {};

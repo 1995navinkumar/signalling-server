@@ -3,7 +3,7 @@ const PartyManager = require("./party-manager");
 var request = {
     "create-party": function createParty(requester, message) {
         var { data } = message;
-        var party = PartyManager.createParty(requester, data.invited);
+        var party = PartyManager.createParty(requester, data && data.invited);
         requester.respond({ type: "party-creation-success", data: { partyId: party.partyId } });
     },
     "join-party": function joinParty(requester, message) {

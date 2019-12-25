@@ -32,7 +32,7 @@ function Connection(ws, sessionId) {
     this.ws = ws;
     this.id = sessionId;
     Object.assign(this, utils.composeEventHandler());
-    this.messageHandler = loadBalancer.call(this, messageValidator, messageHandler);
+    this.loadBalancer = loadBalancer.call(this, messageValidator, messageHandler);
 }
 
 Connection.prototype.signal = function signal(message) {
