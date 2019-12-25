@@ -44,7 +44,7 @@ function Party(member, invited) {
     this.setAdmin(member);
 }
 Party.prototype.hasDJ = function hasDJ() {
-    return this.DJ ? true : false;
+    return this.DJ;
 }
 
 Party.prototype.getDJ = function getDJ() {
@@ -104,6 +104,7 @@ Party.prototype.removeMember = function removeMember(member) {
     member.type = undefined;
     if (this.isAdmin(member)) {
         var nextAdmin = this.partyMembers[0];
+        this.setAdmin(nextAdmin);
         this.partyMembers.forEach(partyMem => {
             if (member.id != partyMem.id) {
                 partyMem.notify({ type: "admin-left", data: { memberId: member.id, nextAdmin: nextAdmin.id } })
@@ -112,6 +113,7 @@ Party.prototype.removeMember = function removeMember(member) {
     }
 
     if (this.isDJ(member)) {
+        this.DJ = undefined;
         this.partyMembers.forEach(partyMem => {
             if (member.id != partyMem.id) {
                 partyMem.notify({ type: "dj-left", data: { memberId: member.id } })
