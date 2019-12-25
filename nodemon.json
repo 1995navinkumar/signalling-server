@@ -1,6 +1,6 @@
 {
     "watch": [
-        "app/signalling-server",
+        "app",
         "index.js"
     ],
     "ext" : "js",
