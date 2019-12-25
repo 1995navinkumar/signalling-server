@@ -10,7 +10,7 @@ function Socket(server, wss) {
                 wss.emit('connection', ws, sessionId);
             });
         } else {
-            console.log("UnAuthorised client , destroying socket connection");
+            logger.info("UnAuthorised client , destroying socket connection");
             socket.destroy();
             return;
         }
@@ -20,7 +20,7 @@ function Socket(server, wss) {
         var connection = ConnectionManager.createConnection(ws, sessionId);
         ws.on("message", utils.pipe(utils.parser, connection.incomingMessageHandler));
         ws.on("close", ConnectionManager.terminateConnection(connection));
-        ws.on("error", console.log);
+        ws.on("error", logger.error);
     });
 }
 

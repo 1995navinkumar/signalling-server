@@ -6,7 +6,6 @@ const Socket = require("./app/server-socket");
 const http = require('http');
 const WebSocket = require("ws");
 var cookieParser = require('cookie-parser');
-var logger = require("./app-logger");
 
 
 // modules
@@ -34,8 +33,6 @@ const wss = new WebSocket.Server({ clientTracking: false, noServer: true });
 server.listen(process.env.port || 8080, function () {
     console.log('server running on port', process.env.port || 8080);
 });
-
-logger.info("logger created");
 
 // Creating websocket
 Socket(server, wss);

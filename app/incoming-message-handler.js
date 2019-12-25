@@ -8,7 +8,7 @@ var request = {
             requester.respond({ type: "party-creation-success", data: { partyId: party.partyId } });
         } catch (error) {
             requester.respond({ type: "party-creation-failure" });
-            console.log("Error in creating party", error);
+            logger.error("Error in creating party", error);
         }
     },
     "join-party": function joinParty(requester, message) {

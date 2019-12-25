@@ -1,4 +1,3 @@
-const log = console.log;
 const utils = require("./utils");
 const IncomingMessageHandler = require("./incoming-message-handler");
 const logger = require("../app-logger");
@@ -8,13 +7,13 @@ function ConnectionManager() {
     function createConnection(ws, sessionId) {
         var connection = new Connection(ws, sessionId);
         activeConnection[sessionId] = connection;
-        log("connection established : " + sessionId);
+        logger.info("connection established : " + sessionId);
         return connection;
     }
     function terminateConnection(connection) {
         return (e) => {
             connection.trigger("close", connection);
-            log("connection terminated : " + connection.id);
+            logger.info("connection terminated : " + connection.id);
             delete activeConnection[connection.id];
         }
     }
@@ -53,7 +52,7 @@ Connection.prototype.notify = function notify(message) {
 function MessageHandler(categoryMapper) {
     return (message) => {
         if (message) {
-            console.log(message);
+            logger.info(message);
             var { category, type } = message;
             return categoryMapper[category][type](this, message);
         }

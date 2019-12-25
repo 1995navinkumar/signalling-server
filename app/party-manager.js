@@ -8,13 +8,13 @@ function PartyManager() {
     function createParty(connection, invited) {
         var party = new Party(connection, invited);
         activeParties[party.partyId] = party;
-        console.log(`party created : ${party.partyId}`);
+        logger.info(`party created : ${party.partyId}`);
         return party;
     }
 
     function endParty(partyId) {
         delete activeParties[partyId];
-        console.log("party ended!");
+        logger.info("party ended!");
     }
     return {
         getParty, createParty, endParty
