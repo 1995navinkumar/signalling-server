@@ -48,6 +48,30 @@ var request = {
     }
 };
 
+var response = {
+    "join-party": function joinParty(responder, message) {
+        var accepted = message.data.accepted;
+        var requester = ConnectionManager.getConnection(message.data.memberId);
+        requester.forward(responder, message);
+        if (accepted) {
+            var party = PartyManager.getParty(responder.partyId);
+            party.addMember(requester);
+            var dj = party.getDJ();
+            dj.notify({ type: "join-party", data: { memberIds: [requester.id] } });
+        }
+    },
+    "become-dj": function becomeDJ(responder, message) {
+        var accepted = message.data.accepted;
+        var requester = ConnectionManager.getConnection(message.data.memberId);
+        requester.forward(responder, message);
+        if (accepted) {
+            var party = PartyManager.getParty(responder.partyId);
+            party.setDJ(requester);
+            requester.notify({ type: "join-party", data: { memberIds: party.getMemberIds() } });
+        }
+    }
+}
+
 function rtc(sender, message) {
     var { data } = message;
     var recipientId = data.memberId;
@@ -70,11 +94,14 @@ var action = {
 
 }
 
+
+
 var categoryMapper = {
     request,
     webrtc,
     message,
-    action
+    action,
+    response
 }
 
 module.exports = categoryMapper;

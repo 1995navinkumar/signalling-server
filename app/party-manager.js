@@ -57,6 +57,11 @@ Party.prototype.setDJ = function setDJ(member) {
     }
     member.type += 1;
     this.DJ = member;
+    this.partyMembers.forEach(partyMem => {
+        if (!this.isDJ(partyMem)) {
+            partyMem.notify({ type: "dj-change", data: { memberId: member.memberId } });
+        }
+    })
 }
 
 Party.prototype.isDJ = function isDJ(member) {

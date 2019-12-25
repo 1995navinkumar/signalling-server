@@ -18,8 +18,12 @@ function ConnectionManager() {
             delete activeConnection[connection.id];
         }
     }
+    function getConnection(id) {
+        return activeConnection[id];
+    }
     return {
         createConnection,
+        getConnection,
         terminateConnection
     }
 }
