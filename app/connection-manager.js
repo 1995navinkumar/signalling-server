@@ -1,5 +1,5 @@
 const utils = require("./utils");
-const IncomingMessageHandler = require("./incoming-message-handler");
+const loadBalancer = require("./load-balancer");
 const logger = require("../app-logger");
 
 function ConnectionManager() {
@@ -27,7 +27,7 @@ function Connection(ws, sessionId) {
     this.ws = ws;
     this.id = sessionId;
     Object.assign(this, utils.composeEventHandler());
-    this.incomingMessageHandler = MessageHandler.call(this, IncomingMessageHandler);
+    this.loadBalancer = MessageHandler.call(this, loadBalancer);
 }
 
 Connection.prototype.signal = function signal(message) {
@@ -51,11 +51,9 @@ Connection.prototype.notify = function notify(message) {
 
 function MessageHandler(categoryMapper) {
     return (message) => {
-        if (message) {
-            logger.info(message);
-            var { category, type } = message;
-            return categoryMapper[category][type](this, message);
-        }
+        logger.info(message);
+        var { category, type } = message;
+        return categoryMapper[category][type](this, message);
     }
 }
 

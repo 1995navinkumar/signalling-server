@@ -3,37 +3,41 @@ const PartyManager = require("./party-manager");
 var request = {
     "create-party": function createParty(requester, message) {
         var data = message.data || {};
-        try {
+        if (!requester.partyId) {
             var party = PartyManager.createParty(requester, data.invited);
             requester.respond({ type: "party-creation-success", data: { partyId: party.partyId } });
-        } catch (error) {
-            requester.respond({ type: "party-creation-failure" });
-            logger.error("Error in creating party", error);
+        } else {
+            requester.respond({ type: "party-creation-failure", data: { reason: "cannot create another party" } });
         }
     },
     "join-party": function joinParty(requester, message) {
-        var data = message.data;
-        var partyId = data.partyId;
-        var party = PartyManager.getParty(partyId);
-        var isInvited = party.isInvited(requester);
-        if (isInvited) {
-            party.addMember(requester);
-            requester.respond({ type: "join-party-success" });
-            if (party.hasDJ()) {
-                var dj = party.getDJ();
-                dj.notify({ type: "join-party", data: { memberIds: [requester.id] } });
-            }
+        if (!requester.partyId) {
+            var data = message.data;
+            var partyId = data.partyId;
+            var party = PartyManager.getParty(partyId);
+            var isInvited = party.isInvited(requester);
+            if (isInvited) {
+                party.addMember(requester);
+                requester.respond({ type: "join-party-success" });
+                if (party.hasDJ()) {
+                    var dj = party.getDJ();
+                    dj.notify({ type: "join-party", data: { memberIds: [requester.id] } });
+                }
 
+            } else {
+                // notify admin about the request
+                var admin = party.getAdmin();
+                admin.forward(requester, message);
+            }
         } else {
-            // notify admin about the request
-            var admin = party.getAdmin();
-            admin.forward(connection, message);
+            requester.respond({ type: "join-party-failure", data: { reason: "cannot join another party" } })
         }
     },
     "become-dj": function becomeDJ(requester, message) {
         var { data } = message;
         var party = PartyManager.getParty(requester.partyId);
         if (party.isAdmin(requester)) {
+            party.setDJ(requester);
             requester.respond({ type: "dj-accept" });
             requester.notify({ type: "join-party", data: { memberIds: party.getMemberIds() } });
         } else {
