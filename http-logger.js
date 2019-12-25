@@ -10,9 +10,9 @@ const fs = require('fs');
 const path = require('path');
 const rfs = require('rotating-file-stream')
 
-var stream = rfs('serverout.log', {
+var stream = rfs.createStream('serverout.log', {
   interval: '1d', // rotate daily
-  path: path.join(__dirname, 'log')
+  path: path.join(__dirname, 'logs')
 })
 
 morgan.token("id", function (req) {
