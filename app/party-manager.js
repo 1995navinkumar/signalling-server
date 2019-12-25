@@ -13,6 +13,8 @@ function PartyManager() {
     }
 
     function endParty(partyId) {
+        var party = activeParties[partyId];
+        party.end();
         delete activeParties[partyId];
         logger.info("party ended!" + partyId);
     }
@@ -38,8 +40,8 @@ function Party(member, invited) {
     this.partyMembers = [];
     this.invited = invited || [];
     this.partyId = utils.uuid();
-    this.setAdmin(member);
     this.addMember(member);
+    this.setAdmin(member);
 }
 Party.prototype.hasDJ = function hasDJ() {
     return this.DJ ? true : false;
@@ -55,6 +57,10 @@ Party.prototype.setDJ = function setDJ(member) {
     }
     member.type += 1;
     this.DJ = member;
+}
+
+Party.prototype.isDJ = function isDJ(member) {
+    return member.type & 1;
 }
 
 Party.prototype.getAdmin = function getAdmin() {
@@ -94,16 +100,39 @@ Party.prototype.isInvited = function isInvited(member) {
 Party.prototype.removeMember = function removeMember(member) {
     var memIndex = this.partyMembers.findIndex(partyMember => member.id == partyMember.id);
     this.partyMembers.splice(1, memIndex);
-    if (member.type & 2) {
-        //  admin removed
+    member.partyId = undefined;
+    member.type = undefined;
+    if (this.isAdmin(member)) {
+        var nextAdmin = this.partyMembers[0];
+        this.partyMembers.forEach(partyMem => {
+            if (member.id != partyMem.id) {
+                partyMem.notify({ type: "admin-left", data: { memberId: member.id, nextAdmin: nextAdmin.id } })
+            }
+        })
     }
 
-    if (member.type & 1) {
-        // dj removed
+    if (this.isDJ(member)) {
+        this.partyMembers.forEach(partyMem => {
+            if (member.id != partyMem.id) {
+                partyMem.notify({ type: "dj-left", data: { memberId: member.id } })
+            }
+        })
     } else {
-        // member removed
+        this.partyMembers.forEach(partyMem => {
+            if (member.id != partyMem.id) {
+                partyMem.notify({ type: "member-left", data: { memberId: member.id } })
+            }
+        })
     }
 
+}
+
+Party.prototype.end = function end() {
+    this.partyMembers.forEach(member => {
+        member.notify({ type: "party-ended" })
+        member.partyId = undefined;
+        member.type = undefined;
+    })
 }
 
 module.exports = PartyManager();
