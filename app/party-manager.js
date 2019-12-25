@@ -109,12 +109,16 @@ Party.prototype.removeMember = function removeMember(member) {
     member.type = undefined;
     if (this.isAdmin(member)) {
         var nextAdmin = this.partyMembers[0];
-        this.setAdmin(nextAdmin);
-        this.partyMembers.forEach(partyMem => {
-            if (member.id != partyMem.id) {
-                partyMem.notify({ type: "admin-left", data: { memberId: member.id, nextAdmin: nextAdmin.id } })
-            }
-        })
+        if (nextAdmin) {
+            this.setAdmin(nextAdmin);
+            this.partyMembers.forEach(partyMem => {
+                if (member.id != partyMem.id) {
+                    partyMem.notify({ type: "admin-left", data: { memberId: member.id, nextAdmin: nextAdmin.id } })
+                }
+            })
+        } else {
+            PartyManager.endParty(this.partyId);
+        }
     }
 
     if (this.isDJ(member)) {
