@@ -1,7 +1,7 @@
 const utils = require("./utils");
 const logger = require("../app-logger");
 
-function PartyManager() {
+var PartyManager = (function PartyManager() {
     var activeParties = {};
     function getParty(partyId) {
         return activeParties[partyId];
@@ -22,7 +22,7 @@ function PartyManager() {
     return {
         getParty, createParty, endParty
     }
-}
+})();
 
 /**
  * 
@@ -105,11 +105,13 @@ Party.prototype.isInvited = function isInvited(member) {
 
 Party.prototype.removeMember = function removeMember(member) {
     var memIndex = this.partyMembers.findIndex(partyMember => member.id == partyMember.id);
-    this.partyMembers.splice(1, memIndex);
-    member.partyId = undefined;
-    member.type = undefined;
+    this.partyMembers.splice(memIndex, 1);
+    logger.info(this.partyMembers.length);
+    logger.info(member.type);
     if (this.isAdmin(member)) {
+        logger.info("member is an admin");
         var nextAdmin = this.partyMembers[0];
+        logger.info(nextAdmin);
         if (nextAdmin) {
             this.setAdmin(nextAdmin);
             this.partyMembers.forEach(partyMem => {
@@ -118,6 +120,7 @@ Party.prototype.removeMember = function removeMember(member) {
                 }
             })
         } else {
+            logger.info("end the party");
             PartyManager.endParty(this.partyId);
         }
     }
@@ -129,14 +132,17 @@ Party.prototype.removeMember = function removeMember(member) {
                 partyMem.notify({ type: "dj-left", data: { memberId: member.id } })
             }
         })
-    } else {
+    }
+    if (member.type == 0) {
+        logger.info("remove normal member" + member.id);
         this.partyMembers.forEach(partyMem => {
             if (member.id != partyMem.id) {
                 partyMem.notify({ type: "member-left", data: { memberId: member.id } })
             }
         })
     }
-
+    member.partyId = undefined;
+    member.type = undefined;
 }
 
 Party.prototype.end = function end() {
@@ -147,4 +153,4 @@ Party.prototype.end = function end() {
     })
 }
 
-module.exports = PartyManager();
+module.exports = PartyManager;
