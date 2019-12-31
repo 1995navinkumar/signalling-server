@@ -15,7 +15,7 @@ function ConnectionManager() {
         return (e) => {
             connection.trigger("close", connection);
             logger.info("connection terminated : " + connection.id);
-            delete activeConnection[connection.id];
+            return delete activeConnection[connection.id];
         }
     }
     function getConnection(id) {

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "serve": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "riteway -r @babel/register -r @babel/polyfill 'test/**/*-test.js'"
   },
   "repository": {
     "type": "git",
@@ -36,6 +36,11 @@
     "ws": "^7.2.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4"
+    "@babel/core": "^7.7.7",
+    "@babel/polyfill": "^7.7.0",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/register": "^7.7.7",
+    "nodemon": "^1.19.4",
+    "riteway": "^6.1.1"
   }
 }

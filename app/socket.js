@@ -5,10 +5,10 @@ const logger = require("../app-logger");
 
 function Socket(server, wss) {
     server.on('upgrade', function (request, socket, head) {
-        var sessionId = AuthUtil.authorize(request);
-        if (sessionId) {
+        var id = AuthUtil.authorize(request);
+        if (id) {
             wss.handleUpgrade(request, socket, head, function (ws) {
-                wss.emit('connection', ws, sessionId);
+                wss.emit('connection', ws, id);
             });
         } else {
             logger.info("UnAuthorised client , destroying socket connection");
@@ -17,8 +17,8 @@ function Socket(server, wss) {
         }
     });
 
-    wss.on('connection', function onConnection(ws, sessionId) {
-        var connection = ConnectionManager.createConnection(ws, sessionId);
+    wss.on('connection', function onConnection(ws, id) {
+        var connection = ConnectionManager.createConnection(ws, id);
         ws.on("message", utils.pipe(utils.parser, connection.loadBalancer));
         ws.on("close", ConnectionManager.terminateConnection(connection));
         ws.on("error", logger.error);
