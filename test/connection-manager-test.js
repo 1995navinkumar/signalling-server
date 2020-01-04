@@ -1,4 +1,4 @@
-import { describe, Try } from 'riteway';
+import { describe } from 'riteway';
 
 const ConnectionManager = require("../app/connection-manager");
 
