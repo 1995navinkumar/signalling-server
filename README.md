@@ -81,6 +81,17 @@ var Message = {
 | answer    | Party Member      | DJ                | Answer sent to DJ for webrtc |
 | candidate | DJ / Party Member | DJ / Party Member | candidate sharing for webrtc |
 
+```js
+var Message = {
+    category : "webrtc", 
+    type : "offer/answer/candidate", 
+    data : {
+        memberId : "sample@gmail.com", // respond to the one requested with its mail Id
+        offer : offer
+    }
+}
+```
+
 
 ### Message
 
@@ -92,17 +103,46 @@ var Message = {
 | end-party   | admin    | server  | Action performed by Admin to end the party                     |
 | leave-party | Any      | server  | Action can be performed by any party member to leave the party |
 
+
 ## Outgoing Message Category
 
-### Notify
+### Notification
 
-| Type              | intiator | handler       | Description                                                                                                |
-|-------------------|----------|---------------|------------------------------------------------------------------------------------------------------------|
-| join-party        | server   | DJ            | Notify DJ about a new party member in order to make webrtc connection                                      |
-| dj-change         | server   | Party Members | Notify all party members that DJ has been changed                                                          |
-| admin-left        | server   | Party Members | Notify all party members that admin left the party and who is the current admin                            |
-| dj-left           | server   | Party Members | Notify all Party Members that DJ has left and anyone can request to become a DJ                            |
-| member-left       | server   | Party Members | Notify all Party Members that a particular member has left the party                                       |
-| party-ended       | server   | Party Members | Notify all Party Members that the party has been ended by the admin                                        |
-| become-dj-pending | server   | DJ            | Notify the requester of become-dj that the request has been sent to admin and the pending for confirmation |
+| Type        | intiator | handler       | Description                                                           |
+|-------------|----------|---------------|-----------------------------------------------------------------------|
+| join-party  | server   | DJ            | Notify DJ about a new party member in order to make webrtc connection |
+| member-left | server   | Party Members | Notify all Party Members that a particular member has left the party  |
+| dj-change   | server   | Party Members | Notify all party members that DJ has been changed                     |
+| party-ended | server   | Party Members | Notify all Party Members that the party has been ended by the admin   |
 
+```js
+var Message = {
+    category : "notification", 
+    type : "join-party", 
+    data : {
+        memberIds : ["sample@gmail.com","sample2@gmail.com"] // respond to the one requested with its mail Id
+    }
+}
+```
+
+```js
+var Message = {
+    category : "notification", 
+    type : "dj-change", 
+    data : {
+        memberId : "sample@gmail.com" 
+    }
+}
+```
+
+```js
+var Message = {
+    category : "notification", 
+    type : "member-left", 
+    data : {
+        memberId : "sample@gmail.com" ,
+        role : "admin/DJ/member"
+
+    }
+}
+```
