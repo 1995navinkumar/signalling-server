@@ -60,7 +60,7 @@ Party.prototype.setDJ = function setDJ(member) {
     this.DJ = member;
     this.partyMembers.forEach(partyMem => {
         if (!this.isDJ(partyMem)) {
-            partyMem.notify({ type: "dj-change", data: { memberId: member.memberId } });
+            partyMem.notify({ type: "role-change", data: { memberId: member.memberId, role: "dj" } });
         }
     })
 }
@@ -116,7 +116,8 @@ Party.prototype.removeMember = function removeMember(member) {
             this.setAdmin(nextAdmin);
             this.partyMembers.forEach(partyMem => {
                 if (member.id != partyMem.id) {
-                    partyMem.notify({ type: "admin-left", data: { memberId: member.id, nextAdmin: nextAdmin.id } })
+                    partyMem.notify({ type: "member-left", data: { memberId: member.id, role: "admin" } });
+                    partyMem.notify({ type: "role-change", data: { memberId: member.id, role: "admin" } });
                 }
             })
         } else {
@@ -129,7 +130,7 @@ Party.prototype.removeMember = function removeMember(member) {
         this.DJ = undefined;
         this.partyMembers.forEach(partyMem => {
             if (member.id != partyMem.id) {
-                partyMem.notify({ type: "dj-left", data: { memberId: member.id } })
+                partyMem.notify({ type: "member-left", data: { memberId: member.id, role: "dj" } });
             }
         })
     }
@@ -137,7 +138,7 @@ Party.prototype.removeMember = function removeMember(member) {
         logger.info("remove normal member" + member.id);
         this.partyMembers.forEach(partyMem => {
             if (member.id != partyMem.id) {
-                partyMem.notify({ type: "member-left", data: { memberId: member.id } })
+                partyMem.notify({ type: "member-left", data: { memberId: member.id, role: "member" } })
             }
         })
     }

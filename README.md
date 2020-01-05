@@ -106,14 +106,25 @@ var Message = {
 
 ## Outgoing Message Category
 
+### Response 
+
+| Type                   | intiator | handler | Description                                                                    |
+|------------------------|----------|---------|--------------------------------------------------------------------------------|
+| party-creation-success | server   | admin   | respond to admin about successful party creation                               |
+| party-creation-failure | server   | admin   | response for party creation failure                                            |
+| join-party-success     | server   | Member  | if party member is invited by admin                                            |
+| dj-accept              | server   | DJ      | if requester is an admin                                                       |
+| unauthorised           | server   | Any     | if the message is invalid or the member is not authorised for the given action |
+
+
 ### Notification
 
-| Type        | intiator | handler       | Description                                                              |
-|-------------|----------|---------------|--------------------------------------------------------------------------|
-| join-party  | server   | DJ            | Notify DJ about a new party member in order to make webrtc connection    |
-| member-left | server   | Party Members | Notify all Party Members that a particular member has left the party     |
-| role-change | server   | Party Members | Notify all party members that a role has been changed for a party member |
-| party-ended | server   | Party Members | Notify all Party Members that the party has been ended by the admin      |
+| Type        | intiator | handler       | Description                                                           |
+|-------------|----------|---------------|-----------------------------------------------------------------------|
+| join-party  | server   | DJ            | Notify DJ about a new party member in order to make webrtc connection |
+| member-left | server   | Party Members | A particular member has left the party                                |
+| role-change | server   | Party Members | A role has been changed for a party member                            |
+| party-ended | server   | Party Members | The party has been ended by the admin                                 |
 
 ```js
 var Message = {

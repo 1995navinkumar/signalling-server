@@ -27,7 +27,10 @@ var request = {
             return party ? true : false;
         }
     },
-    "become-dj": authorise,
+    "become-dj": authorise
+}
+
+var action = {
     "end-party": function endPartyValidator(requester, message) {
         var authorised = authorise(requester, message);
         if (authorised) {
@@ -44,7 +47,8 @@ var request = {
 }
 
 var validator = {
-    request
+    request,
+    action
 }
 
 module.exports = validator

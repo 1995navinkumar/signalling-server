@@ -36,15 +36,7 @@ var request = {
         } else {
             var admin = party.getAdmin();
             admin.forward(requester, message);
-            requester.notify({ type: "become-dj-pending" });
         }
-    },
-    "end-party": function endParty(requester, message) {
-        PartyManager.endParty(requester.partyId);
-    },
-    "leave-party": function quitParty(requester, message) {
-        var party = PartyManager.getParty(requester.partyId);
-        party.removeMember(requester);
     }
 };
 
@@ -91,7 +83,13 @@ var message = {
 }
 
 var action = {
-
+    "end-party": function endParty(requester, message) {
+        PartyManager.endParty(requester.partyId);
+    },
+    "leave-party": function quitParty(requester, message) {
+        var party = PartyManager.getParty(requester.partyId);
+        party.removeMember(requester);
+    }
 }
 
 
