@@ -7,11 +7,16 @@ function Socket(server, wss) {
     server.on('upgrade', function (request, socket, head) {
         var id = AuthUtil.authorize(request);
         if (id) {
-            wss.handleUpgrade(request, socket, head, function (ws) {
-                wss.emit('connection', ws, id);
-            });
+            if (!ConnectionManager.getConnection(id)) {
+                logger.error("Connection already present with same id");
+                socket.destroy();
+            } else {
+                wss.handleUpgrade(request, socket, head, function (ws) {
+                    wss.emit('connection', ws, id);
+                });
+            }
         } else {
-            logger.info("UnAuthorised client , destroying socket connection");
+            logger.error("UnAuthorised client , destroying socket connection");
             socket.destroy();
             return;
         }

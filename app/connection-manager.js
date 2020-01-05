@@ -21,9 +21,22 @@ function ConnectionManager() {
     function getConnection(id) {
         return activeConnection[id];
     }
+
+    function getConnectionCount() {
+        return Object.keys(activeConnection).length;
+    }
+
+    function forEach(callback) {
+        Object.keys(activeConnection).forEach(key => {
+            callback(activeConnection[key]);
+        })
+    }
+
     return {
         createConnection,
         getConnection,
+        getConnectionCount,
+        forEach,
         terminateConnection
     }
 }
