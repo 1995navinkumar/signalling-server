@@ -19,8 +19,8 @@ var Message = {
 | Type         | initiator | handler      | Description                                                          |
 |--------------|-----------|--------------|----------------------------------------------------------------------|
 | create-party | Any       | server       | request to create a new party if not already exist                   |
-| join-party   | Any       | server/Admin | request to join an existing party if not already in another party    |
-| become-dj    | Any       | server/Admin | request to become a DJ of the party which will be forwarded to admin |
+| join-party   | Any       | server/admin | request to join an existing party if not already in another party    |
+| become-dj    | Any       | server/admin | request to become a dj of the party which will be forwarded to admin |
 
 ```js
 var Message = {
@@ -47,8 +47,8 @@ var Message = {
 
 | Type       | initiator | handler | Description                                   |
 |------------|-----------|---------|-----------------------------------------------|
-| join-party | Any       | Admin   | response sent by admin for join-party request |
-| become-dj  | Any       | Admin   | response sent by admin for become-dj request  |
+| join-party | Any       | admin   | response sent by admin for join-party request |
+| become-dj  | Any       | admin   | response sent by admin for become-dj request  |
 
 ```js
 var Message = {
@@ -77,9 +77,9 @@ var Message = {
 
 | Type      | intiator          | handler           | Description                  |
 |-----------|-------------------|-------------------|------------------------------|
-| offer     | DJ                | Party Member      | offer sent by DJ for webrtc  |
-| answer    | Party Member      | DJ                | Answer sent to DJ for webrtc |
-| candidate | DJ / Party Member | DJ / Party Member | candidate sharing for webrtc |
+| offer     | dj                | Party Member      | offer sent by dj for webrtc  |
+| answer    | Party Member      | dj                | Answer sent to dj for webrtc |
+| candidate | dj / Party Member | dj / Party Member | candidate sharing for webrtc |
 
 ```js
 var Message = {
@@ -100,7 +100,7 @@ var Message = {
 
 | Type        | intiator | handler | Description                                                    |
 |-------------|----------|---------|----------------------------------------------------------------|
-| end-party   | admin    | server  | Action performed by Admin to end the party                     |
+| end-party   | admin    | server  | Action performed by admin to end the party                     |
 | leave-party | Any      | server  | Action can be performed by any party member to leave the party |
 
 
@@ -112,8 +112,8 @@ var Message = {
 |------------------------|----------|---------|--------------------------------------------------------------------------------|
 | party-creation-success | server   | admin   | respond to admin about successful party creation                               |
 | party-creation-failure | server   | admin   | response for party creation failure                                            |
-| join-party-success     | server   | Member  | if party member is invited by admin                                            |
-| dj-accept              | server   | DJ      | if requester is an admin                                                       |
+| join-party-success     | server   | member  | if party member is invited by admin                                            |
+| dj-accept              | server   | dj      | if requester is an admin                                                       |
 | unauthorised           | server   | Any     | if the message is invalid or the member is not authorised for the given action |
 
 
@@ -121,7 +121,7 @@ var Message = {
 
 | Type        | intiator | handler       | Description                                                           |
 |-------------|----------|---------------|-----------------------------------------------------------------------|
-| join-party  | server   | DJ            | Notify DJ about a new party member in order to make webrtc connection |
+| join-party  | server   | dj            | Notify dj about a new party member in order to make webrtc connection |
 | member-left | server   | Party Members | A particular member has left the party                                |
 | role-change | server   | Party Members | A role has been changed for a party member                            |
 | party-ended | server   | Party Members | The party has been ended by the admin                                 |
@@ -142,7 +142,7 @@ var Message = {
     type : "role-change", 
     data : {
         memberId : "sample@gmail.com" ,
-        role : "admin/DJ"
+        role : "admin/dj"
     }
 }
 ```
@@ -153,7 +153,7 @@ var Message = {
     type : "member-left", 
     data : {
         memberId : "sample@gmail.com" ,
-        role : "admin/DJ/member"
+        role : "admin/dj/member"
 
     }
 }
