@@ -16,11 +16,31 @@ var Message = {
 
 ### Request
 
-| Type         | initiator | handler      | Description                                                          | Expected data      |
-|--------------|-----------|--------------|----------------------------------------------------------------------|--------------------|
-| create-party | Any       | server       | request to create a new party if not already exist                   | {invited : Array}  |
-| join-party   | Any       | server/Admin | request to join an existing party if not already in another party    | {partyId : String} |
-| become-dj    | Any       | server/Admin | request to become a DJ of the party which will be forwarded to admin | {}                 |
+| Type         | initiator | handler      | Description                                                          |
+|--------------|-----------|--------------|----------------------------------------------------------------------|
+| create-party | Any       | server       | request to create a new party if not already exist                   |
+| join-party   | Any       | server/Admin | request to join an existing party if not already in another party    |
+| become-dj    | Any       | server/Admin | request to become a DJ of the party which will be forwarded to admin |
+
+```js
+var Message = {
+    category : "request", 
+    type : "create-party", 
+    data : {
+        invited : ["sample@gmail.com","sample1@zohocorp.com"],  // Array of mail id
+    }
+}
+```
+
+```js
+var Message = {
+    category : "request", 
+    type : "join-party", 
+    data : {
+        partyId : "askdfh123"
+    }
+}
+```
 
 
 ### Response
@@ -29,6 +49,29 @@ var Message = {
 |------------|-----------|---------|-----------------------------------------------|
 | join-party | Any       | Admin   | response sent by admin for join-party request |
 | become-dj  | Any       | Admin   | response sent by admin for become-dj request  |
+
+```js
+var Message = {
+    category : "response", 
+    type : "join-party", 
+    data : {
+        memberId : "sample@gmail.com" // respond to the one requested with its mail Id
+        status : "success / failure"  
+    }
+}
+```
+
+```js
+var Message = {
+    category : "request", 
+    type : "become-dj", 
+    data : {
+        memberId : "sample@gmail.com" // respond to the one requested with its mail Id
+        status : "success / failure"  
+    }
+}
+```
+
 
 ### webrtc
 
