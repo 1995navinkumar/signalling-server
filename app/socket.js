@@ -7,9 +7,12 @@ function Socket(server, wss) {
     server.on('upgrade', function (request, socket, head) {
         var id = AuthUtil.authorize(request);
         if (id) {
-            if (!ConnectionManager.getConnection(id)) {
-                logger.error("Connection already present with same id");
-                socket.destroy();
+            var connection = ConnectionManager.getConnection(id);
+            if (connection) {
+                logger.info("Connection already present with same id , so resuming connection");
+                wss.handleUpgrade(request, socket, head, function (ws) {
+                    attachEvents(connection, ws);
+                });
             } else {
                 wss.handleUpgrade(request, socket, head, function (ws) {
                     wss.emit('connection', ws, id);
@@ -24,10 +27,14 @@ function Socket(server, wss) {
 
     wss.on('connection', function onConnection(ws, id) {
         var connection = ConnectionManager.createConnection(ws, id);
+        attachEvents(connection, ws);
+    });
+
+    function attachEvents(connection, ws) {
         ws.on("message", utils.pipe(utils.parser, connection.loadBalancer));
         ws.on("close", ConnectionManager.terminateConnection(connection));
         ws.on("error", logger.error);
-    });
+    }
 }
 
 module.exports = Socket;

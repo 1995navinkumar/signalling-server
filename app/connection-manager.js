@@ -44,8 +44,18 @@ function ConnectionManager() {
 function Connection(ws, sessionId) {
     this.ws = ws;
     this.id = sessionId;
+    this.notificationList = [];
     Object.assign(this, utils.composeEventHandler());
     this.loadBalancer = loadBalancer.call(this, messageValidator, messageHandler);
+}
+
+Connection.prototype.getNotificationList = function getNotificationList() {
+    return this.notificationList;
+};
+
+Connection.prototype.removeNotification = function removeNotification(notificationId) {
+    var index = this.notificationList.findIndex(message => message.data.notificationId == notificationId);
+    this.notificationList.splice(index, 1);
 }
 
 Connection.prototype.signal = function signal(message) {
@@ -62,7 +72,15 @@ Connection.prototype.respond = function respond(message) {
     this.signal(message);
 }
 
+Connection.prototype.api = function api(message) {
+    message.category = "api";
+    this.signal(message);
+}
+
 Connection.prototype.notify = function notify(message) {
+    message.data = message.data || {};
+    message.data.notificationId = utils.uuid();
+    this.notificationList.push(message);
     message.category = "notification";
     this.signal(message);
 }

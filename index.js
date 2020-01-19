@@ -13,8 +13,6 @@ var cookieParser = require('cookie-parser');
 // instantiate
 const app = express();
 
-app.use(express.static('app/peer-party'));
-
 // adding unique id for every request
 app.use(uuid);
 

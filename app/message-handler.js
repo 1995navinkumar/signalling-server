@@ -92,6 +92,15 @@ var action = {
     }
 }
 
+var api = {
+    notification: function getNotification(requester) {
+        requester.api({
+            type: "notification-list",
+            data: requester.getNotificationList()
+        });
+    }
+}
+
 
 
 var categoryMapper = {
@@ -99,7 +108,8 @@ var categoryMapper = {
     webrtc,
     message,
     action,
-    response
+    response,
+    api
 }
 
 module.exports = categoryMapper;
