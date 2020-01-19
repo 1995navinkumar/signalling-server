@@ -33,6 +33,7 @@ function ConnectionManager() {
     }
 
     return {
+        activeConnection,
         createConnection,
         getConnection,
         getConnectionCount,

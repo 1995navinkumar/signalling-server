@@ -7,7 +7,8 @@ function Socket(server, wss) {
     server.on('upgrade', function (request, socket, head) {
         var id = AuthUtil.authorize(request);
         if (id) {
-            if (!ConnectionManager.getConnection(id)) {
+            console.log(id,ConnectionManager.activeConnection);
+            if (ConnectionManager.getConnection(id)) {
                 logger.error("Connection already present with same id");
                 socket.destroy();
             } else {

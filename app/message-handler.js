@@ -2,14 +2,13 @@ const PartyManager = require("./party-manager");
 
 var request = {
     "create-party": function createParty(requester, message) {
-        var { data } = message;
-        var party = PartyManager.createParty(requester, data && data.invited);
+        var { data: {invited, partyName = "dummy"} } = message;
+        var party = PartyManager.createParty(requester, invited, partyName) ;
         requester.respond({ type: "party-creation-success", data: { partyId: party.partyId } });
     },
     "join-party": function joinParty(requester, message) {
-        var { data } = message;
-        var partyId = data.partyId;
-        var party = PartyManager.getParty(partyId);
+        var { data: {partyName} } = message;
+        var party = PartyManager.getPartyByName(partyName);
         var isInvited = party.isInvited(requester);
         if (isInvited) {
             party.addMember(requester);

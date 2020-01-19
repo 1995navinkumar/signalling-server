@@ -3,12 +3,17 @@ const logger = require("../app-logger");
 
 var PartyManager = (function PartyManager() {
     var activeParties = {};
+    var partyIdMapper = {};
     function getParty(partyId) {
         return activeParties[partyId];
     }
-    function createParty(connection, invited) {
-        var party = new Party(connection, invited);
+    function getPartyByName(partyName) {
+        return getParty(partyIdMapper[partyName]);
+    }
+    function createParty(connection, invited, partyName) {
+        var party = new Party(connection, invited, partyName);
         activeParties[party.partyId] = party;
+        partyIdMapper[partyName] = partyId;
         logger.info(`party created : ${party.partyId}`);
         return party;
     }
@@ -20,7 +25,7 @@ var PartyManager = (function PartyManager() {
         logger.info("party ended!" + partyId);
     }
     return {
-        getParty, createParty, endParty
+        getParty, createParty, endParty, getPartyByName
     }
 })();
 
@@ -36,9 +41,10 @@ var PartyManager = (function PartyManager() {
  *      3 - admin + DJ
  */
 
-function Party(member, invited) {
+function Party(member, invited, partyName) {
     this.DJ = undefined;
     this.partyMembers = [];
+    this.partyName = partyName;
     this.invited = invited || [];
     this.partyId = utils.uuid();
     this.addMember(member);
