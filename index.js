@@ -16,13 +16,15 @@ const app = express();
 // adding unique id for every request
 app.use(uuid);
 
+app.use(express.static('public'))
+
 // add body parsers
 app.use(bodyParser.json());
 
 // log all http req/res 
 app.use(httpLogger.req);
 app.use(httpLogger.res);
-app.use(cookieParser())
+app.use(cookieParser());
 
 // listen for request
 const server = http.createServer(app);

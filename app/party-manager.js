@@ -40,7 +40,8 @@ function Party(member, invited) {
     this.DJ = undefined;
     this.partyMembers = [];
     this.invited = invited || [];
-    this.partyId = utils.uuid();
+    // this.partyId = utils.uuid();
+    this.partyId = "navin";
     this.addMember(member);
     this.setAdmin(member);
 }

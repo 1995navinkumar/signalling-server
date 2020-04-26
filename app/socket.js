@@ -1,5 +1,6 @@
 const AuthUtil = require("./auth-util");
 const ConnectionManager = require("./connection-manager");
+const MessageHandler = require("./message-handler");
 const utils = require("./utils");
 const logger = require("../app-logger");
 
@@ -26,7 +27,7 @@ function Socket(server, wss) {
     });
 
     wss.on('connection', function onConnection(ws, id) {
-        var connection = ConnectionManager.createConnection(ws, id);
+        var connection = ConnectionManager.createConnection(ws, id, MessageHandler);
         attachEvents(connection, ws);
     });
 
@@ -45,12 +46,12 @@ function Socket(server, wss) {
     }
 
     const interval = setInterval(function ping() {
-        wss.clients.forEach(function each(ws) {
+        wss.clients && wss.clients.forEach(function each(ws) {
             if (ws.isAlive === false) return ws.terminate();
             ws.isAlive = false;
             ws.ping(noop);
         });
-    }, 30000);
+    }, 10000);
 }
 
 module.exports = Socket;

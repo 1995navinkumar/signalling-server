@@ -1,4 +1,6 @@
 const PartyManager = require("./party-manager");
+const logger = require("../app-logger");
+
 
 function authorise(requester, message) {
     if (requester.partyId) {
@@ -22,8 +24,12 @@ var request = {
             return false;
         } else {
             var partyId = message.data.partyId;
+            console.log(partyId);
+
             var party = PartyManager.getParty(partyId);
-            requester.respond({ type: "join-party-failure", data: { reason: "No such party exists !" } });
+            logger.info(`party : ${party}`);
+            // requester.respond({ type: "join-party-failure", data: { reason: "No such party exists !" } });
+
             return party ? true : false;
         }
     },
@@ -46,9 +52,18 @@ var action = {
     "leave-party": authorise
 }
 
+var webrtc = {
+    "offer": authorise,
+    "answer": authorise,
+    "candidate": authorise
+}
+
+
+
 var validator = {
     request,
-    action
+    action,
+    webrtc
 }
 
 module.exports = validator

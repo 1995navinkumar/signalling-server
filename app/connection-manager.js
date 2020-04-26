@@ -1,12 +1,11 @@
 const utils = require("./utils");
-const messageHandler = require("./message-handler");
 const messageValidator = require("./message-validator");
 const logger = require("../app-logger");
 
-function ConnectionManager() {
+var ConnectionManager = (function ConnectionManager() {
     var activeConnection = {};
-    function createConnection(ws, sessionId) {
-        var connection = new Connection(ws, sessionId);
+    function createConnection(ws, sessionId, handler) {
+        var connection = new Connection(ws, sessionId,handler);
         activeConnection[sessionId] = connection;
         logger.info("connection established : " + sessionId);
         return connection;
@@ -39,14 +38,14 @@ function ConnectionManager() {
         forEach,
         terminateConnection
     }
-}
+})();
 
-function Connection(ws, sessionId) {
+function Connection(ws, sessionId,handler) {
     this.ws = ws;
     this.id = sessionId;
     this.notificationList = [];
     Object.assign(this, utils.composeEventHandler());
-    this.loadBalancer = loadBalancer.call(this, messageValidator, messageHandler);
+    this.loadBalancer = loadBalancer.call(this, messageValidator, handler);
 }
 
 Connection.prototype.getNotificationList = function getNotificationList() {
@@ -88,10 +87,17 @@ Connection.prototype.notify = function notify(message) {
 function loadBalancer(messageValidator, messageHandler) {
     return (message) => {
         logger.info(message);
-        var { category, type } = message;
-        var isValid = messageValidator[category][type](this, message);
-        isValid ? messageHandler[category][type](this, message) : "";
+        try {
+            var { category, type } = message;
+            if (category && type) {
+                var isValid = messageValidator[category][type](this, message);
+                isValid && messageHandler[category][type](this, message)
+            }
+        } catch (err) {
+            console.log(err);
+            logger.error(err.stack);
+        }
     }
 }
 
-module.exports = ConnectionManager();;
+module.exports = ConnectionManager

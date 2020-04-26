@@ -1,4 +1,5 @@
 const PartyManager = require("./party-manager");
+const ConnectionManager = require("./connection-manager");
 
 var request = {
     "create-party": function createParty(requester, message) {
@@ -10,7 +11,8 @@ var request = {
         var { data } = message;
         var partyId = data.partyId;
         var party = PartyManager.getParty(partyId);
-        var isInvited = party.isInvited(requester);
+        // var isInvited = party.isInvited(requester);
+        var isInvited = true;
         if (isInvited) {
             party.addMember(requester);
             requester.respond({ type: "join-party-success" });
@@ -67,8 +69,8 @@ var response = {
 function rtc(sender, message) {
     var { data } = message;
     var recipientId = data.memberId;
-    var party = PartyManager.getParty(recipientId);
-    var recipient = party.getMember(recipientId);
+    console.log(recipientId);
+    var recipient = ConnectionManager.getConnection(recipientId);
     recipient.forward(sender, message);
 }
 
