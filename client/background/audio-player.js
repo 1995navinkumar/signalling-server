@@ -1,20 +1,14 @@
-export default function AudioPlayer(src) {
-    var audio = new Audio();
-    audio.srcObject = src;
-    function play() {
-        audio.play();
+var audio = new Audio();
+const AudioPlayer = {
+    play() {
+        audio.play()
+    },
+    pause() {
+        audio.pause()
+    },
+    setStream(stream) {
+        audio.srcObject = stream;
     }
-    function pause() {
-        audio.pause();
-    }
-    function stop() {
-
-    }
-    var player = {
-        play,
-        pause,
-        stop
-    }
-    window.AudioPlayer = player;
-    return player;
 }
+export default AudioPlayer;
+window.AudioPlayer = AudioPlayer;

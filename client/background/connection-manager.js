@@ -10,7 +10,7 @@ const ConnectionManager = (function ConnectionManager() {
     }
     function terminateConnection() {
         if (!activeConnection) { return };
-        activeConnection.emit("close");
+        activeConnection.events.emit("close");
         activeConnection.close();
         activeConnection = undefined;
         console.log("connection terminated");
@@ -47,7 +47,7 @@ async function makeConnection(url, queryParams) {
 function Connection(ws, handler) {
     this.ws = ws;
     this.handler = MessageHandler.call(this, handler);
-    Object.assign(this, new EventEmitter());
+    this.events = new EventEmitter();
     ws.onmessage = pipe(messageParser, this.handler);
 }
 

@@ -1,5 +1,6 @@
 import React from "react";
 import style from './header.css';
+import * as utils from '../../utils';
 
 class Header extends React.Component {
     redirectToSettings() {
@@ -9,14 +10,11 @@ class Header extends React.Component {
         this.props.history.push("notification");
     }
     redirectToLogin() {
-        chrome.runtime.sendMessage({
-            page: "login",
-            type: "logout"
-        });
-        chrome.runtime.onMessage.addListener(({page, type}) => {
-            if(page === "login" && type === "logout-success") {
-                this.props.history.push("login");
-            }
+        var { ConnectionManager, peer } = utils.getBackground();
+        ConnectionManager.terminateConnection();
+        peer.stopStreaming();
+        this.props.app.setState({
+            route: "login"
         })
     }
     render() {

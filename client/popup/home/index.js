@@ -7,7 +7,6 @@ class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = { partyName: '' };
-        this.onMessage = this.onMessage.bind(this);
     }
 
     handleChange(event) {

@@ -57,7 +57,7 @@ module.exports = class App extends React.Component {
 		var RenderComponent = componentMap[this.state.route || "login"];
 		return (
 			<div className="main">
-				<Header />
+				<Header app={this} />
 				<RenderComponent app={this} />
 			</div>
 		);

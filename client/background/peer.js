@@ -1,4 +1,7 @@
+import AudioPlayer from './audio-player';
 var audioStream;
+console.log("peer");
+
 
 var peer, partyMembers = {};
 
@@ -25,9 +28,8 @@ export function getAudioStream() {
         audioStream = new Promise(function (resolve, reject) {
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 chrome.tabCapture.capture({ audio: true }, (stream) => {
-                    var audioTag = getAudioTag();
-                    audioTag.srcObject = stream;
-                    audioStream = stream;
+                    AudioPlayer.setStream(stream);
+                    AudioPlayer.play();
                     console.log(audioStream);
                     resolve(stream);
                 });
@@ -35,4 +37,14 @@ export function getAudioStream() {
         })
     }
     return audioStream;
+}
+
+export function stopStreaming() {
+    getAudioStream().then(stream => {
+        var tracks = stream.getTracks();
+        tracks && tracks.forEach(function (track) {
+            track.stop();
+        });
+
+    })
 }

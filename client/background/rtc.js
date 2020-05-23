@@ -5,6 +5,7 @@
  */
 
 var log = console.log;
+import EventEmitter from 'events';
 export default class RTC_Connnector {
 
     /**
@@ -25,11 +26,10 @@ export default class RTC_Connnector {
             iceServers
         });
 
-        var eventHandler = new EventHandler();
+        var eventHandler = new EventEmitter();
         this.on = eventHandler.on;
         this.off = eventHandler.off;
-        this.trigger = eventHandler.trigger;
-        this.events = eventHandler.events;
+        this.trigger = eventHandler.emit;
 
         console.log(this.rtcPeer);
 

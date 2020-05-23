@@ -5,11 +5,14 @@ var request = {
     "create-party": function createParty(requester, message) {
         var { data } = message;
         var party = PartyManager.createParty(requester, data && data.invited);
+        console.log(party.partyId);
         requester.respond({ type: "party-creation-success", data: { partyId: party.partyId } });
     },
     "join-party": function joinParty(requester, message) {
         var { data } = message;
         var partyId = data.partyId;
+        console.log(partyId);
+        
         var party = PartyManager.getParty(partyId);
         // var isInvited = party.isInvited(requester);
         var isInvited = true;

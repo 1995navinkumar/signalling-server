@@ -1,16 +1,23 @@
 {
-  "short_name": "ReactStarter",
-  "name": "React Starter",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "manifest_version": 2,
+  "name": "Katcheri",
+  "description": "This extension captures the audio on the current tab and streams it to the peers connected in a party",
+  "version": "1.0.0",
+  "browser_action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": true
+  },
+  "permissions": [
+    "identity",
+    "identity.email",
+    "tabs",
+    "storage",
+    "tabCapture",
+    "activeTab"
+  ]
 }
-

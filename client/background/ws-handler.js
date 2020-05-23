@@ -1,4 +1,5 @@
-import { getAudioStream, getAudioTag } from './peer';
+import { getAudioStream } from './peer';
+import AudioPlayer from './audio-player';
 import RTC_Connnector from './rtc';
 import ConnectionManager from './connection-manager';
 import * as utils from '../utils';
@@ -37,7 +38,8 @@ var webrtc = {
         });
         peer.on("streamReady", function ({ streams: [stream] }) {
             console.log("streamReady");
-            getAudioTag().srcObject = stream;
+            AudioPlayer.setStream(stream);
+            AudioPlayer.play();
         })
         peer.acceptOffer(data.offer);
     },
@@ -59,13 +61,13 @@ var response = {
     "party-creation-success": function (connection, data) {
         var popup = utils.getPopup();
         popup.app.setState({
-            route : "party"
+            route: "party"
         });
     },
     "join-party-success": function (connection, data) {
         var popup = utils.getPopup();
         popup.app.setState({
-            route : "party"
+            route: "party"
         });
     },
     "dj-accept": function () {
