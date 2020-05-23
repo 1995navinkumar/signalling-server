@@ -5,6 +5,11 @@
   "main": "index.js",
   "scripts": {
     "serve": "nodemon index.js",
+    "build-background": "browserify client/background/index.js -t babelify -t browserify-css -o public/background.js",
+    "build-popup": "browserify client/popup/index.js -t babelify -t browserify-css -o public/popup.js",
+    "watch-background": "watchify client/background/index.js -t babelify -t browserify-css -o public/background.js -dv",
+    "watch-popup": "watchify client/popup/index.js -t babelify -t browserify-css -o public/popup.js -dv",
+    "watch": "run-p watch-*",
     "test": "riteway -r @babel/register -r @babel/polyfill 'test/**/*-test.js'"
   },
   "repository": {
@@ -33,7 +38,12 @@
     "uuid": "^3.3.3",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.4.0",
-    "ws": "^7.2.0"
+    "ws": "^7.2.0",
+    "@babel/polyfill": "^7.8.7",
+    "events": "^3.1.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router-dom": "^5.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",
@@ -41,6 +51,18 @@
     "@babel/preset-env": "^7.7.7",
     "@babel/register": "^7.7.7",
     "nodemon": "^1.19.4",
-    "riteway": "^6.1.1"
+    "riteway": "^6.1.1",
+    "@babel/plugin-transform-runtime": "^7.9.6",
+    "@babel/preset-react": "^7.0.0",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
+    "browserify-css": "^0.15.0",
+    "mkdirp": "^0.5.1",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^2.6.3",
+    "serve": "^11.1.0",
+    "uglify-js": "^3.6.0",
+    "uglifyify": "^5.0.2",
+    "watchify": "^3.11.1"
   }
 }

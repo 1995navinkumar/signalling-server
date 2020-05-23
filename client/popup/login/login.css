@@ -1,0 +1,47 @@
+#party-icon {
+    width: 88px;
+    height: 88px;
+}
+
+#login-button {
+    width: 96px;
+    height: 32px;
+    display: block;
+    margin-top: 16px;
+    background-color: #6a2aa5;
+    color: white;
+    font-weight: bolder;
+    font-size: 16px;
+}
+
+.login-page {
+    padding: 8px;
+    margin: 8px 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#logout-icon {
+    cursor: pointer;
+    right: 10px;
+    top: 10px;
+    width: 16px;
+    height: 16px;
+    margin: 0 4px;
+}
+
+.login-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.login-message {
+    padding: 8px;
+    border: 2px solid #6a2aa5;
+    border-radius: 12px;
+    background-color: #e6e6fa;
+}

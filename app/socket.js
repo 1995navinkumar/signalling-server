@@ -12,6 +12,7 @@ function Socket(server, wss) {
             if (connection) {
                 logger.info("Connection already present with same id , so resuming connection");
                 wss.handleUpgrade(request, socket, head, function (ws) {
+                    connection.ws = ws;
                     attachEvents(connection, ws);
                 });
             } else {
