@@ -10,9 +10,10 @@ class Header extends React.Component {
         this.props.history.push("notification");
     }
     redirectToLogin() {
-        var { ConnectionManager, peer } = utils.getBackground();
+        var { ConnectionManager, peer , AudioPlayer } = utils.getBackground();
         ConnectionManager.terminateConnection();
         peer.stopStreaming();
+        AudioPlayer.pause();
         this.props.app.setState({
             route: "login"
         })
