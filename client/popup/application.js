@@ -29,7 +29,7 @@ module.exports = class App extends React.Component {
 			style: {
 				visibility: "hidden"
 			},
-			route: ""
+			route: localStorage.getItem("page")
 		};
 	}
 
@@ -39,13 +39,14 @@ module.exports = class App extends React.Component {
 		var route = localStorage.getItem("page") || "user";
 		utils.getUserProfile().then(details => {
 			var { email } = details;
-			if (!email && !utils.isExtension()) {
-				route = "user"
+			if (utils.isExtension()) {
+				if (!(connection && connection.ws.readyState == 1)) {
+					route = "login";
+				}
 			} else {
-				route = "login"
-			}
-			if (connection && connection.ws.readyState == 1) {
-				route
+				if (email) {
+					route = "login";
+				}
 			}
 			this.setState({
 				route
@@ -54,12 +55,20 @@ module.exports = class App extends React.Component {
 	}
 
 	render() {
-		var RenderComponent = componentMap[this.state.route || "login"];
+		var RenderComponent = componentMap[this.state.route] || null;
 		return (
-			<div className="main">
-				<Header app={this} />
-				<RenderComponent app={this} />
-			</div>
+			RenderComponent
+				? (
+					<div className="main">
+						<Header app={this} />
+						<RenderComponent app={this} />
+					</div>
+				)
+				: (
+					<div className="main">
+						<Header app={this} />
+					</div>
+				)
 		);
 	}
 }

@@ -12,7 +12,7 @@ class Login extends React.Component {
         var background = utils.getBackground();
         var { ConnectionManager, SocketHandler } = background;
         utils.getUserProfile().then(profile => {
-            var url = localStorage.getItem("signalling") || "localhost:8090";
+            var url = utils.isExtension() ? "localhost:8090" : location.host;
             var queryParams = new URLSearchParams({ email: profile.email }).toString();
             try {
                 ConnectionManager.createConnection(url, queryParams, SocketHandler);
