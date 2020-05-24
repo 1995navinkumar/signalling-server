@@ -10,6 +10,7 @@
     "watch-background": "watchify client/background/index.js -t babelify -t browserify-css -o public/background.js -dv",
     "watch-popup": "watchify client/popup/index.js -t babelify -t browserify-css -o public/popup.js -dv",
     "watch": "run-p watch-*",
+    "build" : "run-p build-*",
     "test": "riteway -r @babel/register -r @babel/polyfill 'test/**/*-test.js'"
   },
   "repository": {
