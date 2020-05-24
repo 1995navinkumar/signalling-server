@@ -4,7 +4,8 @@
   "description": "Signalling server for peer party",
   "main": "index.js",
   "scripts": {
-    "serve": "nodemon index.js",
+    "start": "node index.js",
+    "serve" : "nodemon index.js",
     "build-background": "browserify client/background/index.js -t babelify -t browserify-css -t uglifyify | uglifyjs -o public/background.js",
     "build-popup": "browserify client/popup/index.js -t babelify -t browserify-css -t uglifyify | uglifyjs -o public/popup.js",
     "watch-background": "watchify client/background/index.js -t babelify -t browserify-css -o public/background.js -dv",
