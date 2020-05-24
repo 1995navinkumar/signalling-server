@@ -1,5 +1,6 @@
 function AudioPlayer() {
     var audio = new Audio();
+    audio.autoplay = true;
     function play() {
         audio.play();
     }
@@ -10,7 +11,7 @@ function AudioPlayer() {
         audio.srcObject = stream;
     }
     function getStream() {
-        audio.srcObject;
+       return audio.srcObject;
     }
     return {
         play,
