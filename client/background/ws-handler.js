@@ -39,6 +39,8 @@ var webrtc = {
         peer.on("streamReady", function ({ streams: [stream] }) {
             console.log("streamReady");
             AudioPlayer.setStream(stream);
+            console.log(stream);
+            
             AudioPlayer.play();
         })
         peer.acceptOffer(data.offer);

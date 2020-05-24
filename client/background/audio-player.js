@@ -2,11 +2,9 @@ function AudioPlayer() {
     var audio = new Audio();
     function play() {
         audio.play();
-
     }
     function pause() {
         audio.pause();
-
     }
     function setStream(stream) {
         audio.srcObject = stream;

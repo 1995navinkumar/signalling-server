@@ -38,6 +38,6 @@ export function stopStreaming() {
         tracks && tracks.forEach(function (track) {
             track.stop();
         });
-
-    })
+    });
+    audioStream = undefined;
 }
