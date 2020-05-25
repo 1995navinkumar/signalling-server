@@ -30,8 +30,8 @@ app.use(cookieParser());
 const server = http.createServer(app);
 
 const wss = new WebSocket.Server({ clientTracking: false, noServer: true });
-server.listen(process.env.port || 8090, function () {
-    console.log('server running on port', process.env.port || 8090);
+server.listen(process.env.PORT || 8090, function () {
+    console.log('server running on port', process.env.PORT || 8090);
 });
 
 // Creating websocket
