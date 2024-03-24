@@ -36,6 +36,7 @@ function streamReceiver({ streams: [stream] }) {
 }
 
 function createPeerConnection(iceServers) {
+    log('creating peer connection');
     masterPeer = new RTCPeerConnection({
         iceServers
     });
