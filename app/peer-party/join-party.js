@@ -10,12 +10,14 @@ function streamReceiver({ streams: [stream] }) {
   if (audioPlayer.srcObject) return;
   audioPlayer.srcObject = stream;
   audioPlayer.play();
+  setTimeout(audioPlayer.play, 10);
 }
 
 async function sendAudio() {
   log("add slave track");
   const gumStream = await navigator.mediaDevices.getUserMedia({
     audio: true,
+    video: true,
   });
 
   for (const track of gumStream.getTracks()) {
