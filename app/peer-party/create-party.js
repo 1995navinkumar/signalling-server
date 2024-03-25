@@ -16,9 +16,11 @@ Object.assign(actions, {
     createPeerConnection(iceServers);
   },
   "answer-response": async function acceptAnswer(data) {
+    log("Answer Received");
     var desc = new RTCSessionDescription(data.answer);
+    log(new RTCSessionDescription());
     await masterPeer.setRemoteDescription(desc);
-    log("Master Remote Description is set");
+    log("master.setRemoteDescription");
   },
   "set-remote-candidate": function setRemoteCandidate({
     candidate: remoteCandidate,
@@ -30,18 +32,17 @@ Object.assign(actions, {
 });
 
 function streamReceiver({ streams: [stream] }) {
-  log(stream);
-  log("hello");
+  log("Obtained stream from slave");
   if (audioPlayer.srcObject) return;
   audioPlayer.srcObject = stream;
   audioPlayer.play();
 }
 
 function createPeerConnection(iceServers) {
-  log("creating peer connection");
   masterPeer = new RTCPeerConnection({
     iceServers,
   });
+  log("new RTCPeerConnection");
 
   masterPeer.onicecandidate = handleMasterICECandidateEvent;
   masterPeer.ontrack = streamReceiver;
@@ -51,20 +52,25 @@ function createPeerConnection(iceServers) {
 }
 
 async function sendAudio() {
-  log("add master track");
-  const gumStream = await navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: true,
-  });
+  try {
+    const gumStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+    });
 
-  for (const track of gumStream.getTracks()) {
-    masterPeer.addTrack(track, gumStream);
+    log("getUserMedia");
+
+    for (const track of gumStream.getTracks()) {
+      masterPeer.addTrack(track, gumStream);
+    }
+    log("master.addTrack");
+  } catch (err) {
+    log("Error is getting User Media");
   }
 }
 
 function handleMasterICECandidateEvent(event) {
-  log("ice candidate handling");
   if (event.candidate) {
+    log("Send ICE candidates to slave");
     signal({
       action: "offer-candidate",
       candidate: event.candidate,
@@ -74,9 +80,9 @@ function handleMasterICECandidateEvent(event) {
 
 async function handleNegotiationNeededEvent() {
   try {
-    log("Negotiation started");
-
+    log("Ready to negotiate");
     const offer = await masterPeer.createOffer(constraints);
+    log("master.createOffer");
 
     // If the connection hasn't yet achieved the "stable" state,
     // return to the caller. Another negotiationneeded event
@@ -86,8 +92,8 @@ async function handleNegotiationNeededEvent() {
       return;
     }
 
-    log("Setting to local description");
     await masterPeer.setLocalDescription(offer);
+    log("master.setLocalDescription");
 
     signal({
       action: "offer",
