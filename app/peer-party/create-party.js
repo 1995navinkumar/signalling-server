@@ -16,11 +16,15 @@ Object.assign(actions, {
     createPeerConnection(iceServers);
   },
   "answer-response": async function acceptAnswer(data) {
-    log("Answer Received");
-    var desc = new RTCSessionDescription(data.answer);
-    log(new RTCSessionDescription());
-    await masterPeer.setRemoteDescription(desc);
-    log("master.setRemoteDescription");
+    try {
+      log("Answer Received");
+      var desc = new RTCSessionDescription(data.answer);
+      log("new RTCSessionDescription");
+      await masterPeer.setRemoteDescription(desc);
+      log("master.setRemoteDescription");
+    } catch (err) {
+      log(`Error in setting remote description ${err}`);
+    }
   },
   "set-remote-candidate": function setRemoteCandidate({
     candidate: remoteCandidate,
@@ -64,7 +68,7 @@ async function sendAudio() {
     }
     log("master.addTrack");
   } catch (err) {
-    log("Error is getting User Media");
+    log(`Error in getting User Media ${err}`);
   }
 }
 

@@ -25,7 +25,7 @@ async function sendAudio() {
     }
     log("slave.addTrack");
   } catch (err) {
-    log("Error in getting user media");
+    log(`Error in getting user media ${err}`);
   }
 }
 
