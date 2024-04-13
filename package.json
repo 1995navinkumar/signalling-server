@@ -4,8 +4,8 @@
   "description": "Signalling server for peer party",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "BASE=signalling-server ENV=production node createHTML.js && node index.js",
+    "dev": "node createHTML.js && nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

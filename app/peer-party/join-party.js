@@ -6,21 +6,26 @@ async function joinParty(partyName) {
 }
 
 function streamReceiver({ streams: [stream] }) {
-  log(stream);
+  log("Received stream from master");
   if (audioPlayer.srcObject) return;
   audioPlayer.srcObject = stream;
   audioPlayer.play();
+  setTimeout(audioPlayer.play, 10);
 }
 
 async function sendAudio() {
-  log("add slave track");
-  const gumStream = await navigator.mediaDevices.getUserMedia({
-    audio: true,
-  });
+  try {
+    log("getUserMedia");
+    const gumStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+    });
 
-  for (const track of gumStream.getTracks()) {
-    log(track);
-    slavePeer.addTrack(track, gumStream);
+    for (const track of gumStream.getTracks()) {
+      slavePeer.addTrack(track, gumStream);
+    }
+    log("slave.addTrack");
+  } catch (err) {
+    log(`Error in getting user media ${err}`);
   }
 }
 
@@ -28,6 +33,7 @@ function createPeerConnection(iceServers) {
   slavePeer = new RTCPeerConnection({
     iceServers,
   });
+  log("new RTCPeerConnection");
   slavePeer.onnegotiationneeded = async function () {
     console.log("negotiation needed event slave");
     log(slavePeer.signalingState);
@@ -54,9 +60,11 @@ Object.assign(actions, {
     });
   },
   "answer-request": async function acceptOfferAndSendAnswer(data) {
-    var desc = new RTCSessionDescription(data.offer);
-
+    log("Offer Obtained from Master");
     createPeerConnection(iceServers);
+
+    var desc = new RTCSessionDescription(data.offer);
+    log("new RTCSessionDescription");
 
     // If the connection isn't stable yet, wait for it...
 
@@ -71,13 +79,14 @@ Object.assign(actions, {
       ]);
       return;
     } else {
-      log("  - Setting remote description");
-      await sendAudio();
+      log("slave.setRemoteDescription");
       await slavePeer.setRemoteDescription(desc);
+      await sendAudio();
 
       let answer = await slavePeer.createAnswer(constraints);
-      log(answer);
+      log("slave.createAnswer");
       await slavePeer.setLocalDescription(answer);
+      log("slave.setLocalDescription");
 
       signal({
         action: "answer",
